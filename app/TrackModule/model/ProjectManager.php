@@ -148,6 +148,7 @@ class ProjectManager extends AbstractManager
     public function getMembers($idProject)
     {
         $sql = "SELECT   contribute.id_user, (SELECT username from user where user.id_user = contribute.id_user) as username,  id_role FROM contribute  WHERE contribute.id_project = ?";
+        $sql2 = "";
         $members = $this->m_database->query($sql, $idProject);
         return $members;
 
