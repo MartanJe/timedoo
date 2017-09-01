@@ -1,0 +1,39 @@
+
+
+# Časová zóna.
+php:
+        date.timezone: Europe/Prague
+
+# Application setup
+application:
+      # Presenter pro zpracování vyjímek a chyb aplikace.
+            errorPresenter: Error
+
+            # Přesměrovat výjimky přímo už na ErrorPresenter, jinak jdou standartně na laděnku. (Hodí se obzvláště při debuggování ErrorPresentetu.)
+            # catchExceptions: true # Může mít i hodnotu `yes`.
+       # errorPresenter: Error
+            mapping:
+                *: App\*Module\Presenters\*Presenter
+
+di:
+        debugger: true
+
+session:
+	expiration: 1 hour
+
+
+# Nastavení vlastních služeb dále přístupných pomocí DI v rámci celé aplikace.
+services:
+        router: App\RouterFactory::createRouter # Nastavení routeru aplikace.
+        authenticator: App\Model\UserManager # Nastavení přihlašování do aplikace.
+
+
+# Default form error massages
+forms:
+        messages:
+                REQUIRED: 'Required field. Mrde!'
+
+
+# Included configs from modules
+includes:
+    - ../TrackModule/config/config.neon

@@ -1,0 +1,72 @@
+{block content}
+
+<script>
+    $(function () {
+        $.nette.init();// And you fly...
+    });
+</script>
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1>Requests
+            <small>Administrate your invitations</small>
+        </h1>
+    </div>
+    <div class="col-lg-12">
+        <ol class="breadcrumb">
+            <li class="active"><i class="fa fa-edit"></i> Requests</li>
+            <li class="active"></li>
+        </ol>
+    </div>
+</div><!-- /.row -->
+
+<div class="row">
+    <div class="col-lg-6">
+        {snippet messages}
+            {foreach $flashes as $flash}
+                <div class="alert alert-{$flash->type}">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {$flash->message}
+                </div>
+            {/foreach}
+        {/snippet}
+    </div>
+</div><!-- /.row -->
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="table-responsive">
+            {snippet requestTable}
+                <table class="table table-bordered table-hover tablesorter">
+                    <thead>
+                    <tr>
+                        <th>Invite to project <i class="fa fa-sort"></i></th>
+                        <th>From <i class="fa fa-sort"></i></th>
+                        <th>Date <i class="fa fa-sort"></i></th>
+                        <th>Options <i class=""></i></th>
+                    </tr>
+                    </thead>
+                    <tbody n:snippet="itemsContainer">
+                    <tr n:foreach="$invitations as $invite" >
+                        <td>{$invite->project_name}</td>
+                        <td>{$invite->username_from}</td>
+                        <td>{$invite->date_invite}</td>
+                        <td>
+                            <ol class="breadcrumb cum">
+                                <li><a n:href="RequestAccept! $invite->id_user_from , $invite->id_project" class="ajax">
+                                        <i class="fa fa-check green"></i> </a></li>
+                                <li><a n:href="RequestDecline! $invite->id_user_from , $invite->id_project"
+                                            class="ajax"><i class="fa fa-times red"></i></a></li>
+                            </ol>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!-- Page Specific Plugins -->
+                <script src="{$basePath}/js/tablesorter/jquery.tablesorter.js"></script>
+                <script src="{$basePath}/js/tablesorter/tables.js"></script>
+            {/snippet}
+        </div>
+    </div>
+</div><!-- /.row -->
+

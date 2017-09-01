@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="timedoodb@localhost">
+  <database-model serializer="dbm" rdbms="MYSQL" format-version="4.4">
+    <root id="1"/>
+    <schema id="2" parent="1" name="timedoodb">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <schema id="3" parent="1" name="information_schema"/>
+    <schema id="4" parent="1" name="mysql"/>
+    <schema id="5" parent="1" name="performance_schema"/>
+    <schema id="6" parent="1" name="phpmyadmin"/>
+    <schema id="7" parent="1" name="quickstart"/>
+    <schema id="8" parent="1" name="quickstart3"/>
+    <schema id="9" parent="1" name="simplecms"/>
+    <table id="10" parent="2" name="activity"/>
+    <table id="11" parent="2" name="contribute"/>
+    <table id="12" parent="2" name="invite"/>
+    <table id="13" parent="2" name="project"/>
+    <table id="14" parent="2" name="role"/>
+    <table id="15" parent="2" name="task"/>
+    <table id="16" parent="2" name="user"/>
+    <column id="17" parent="10" name="id_activity">
+      <Position>1</Position>
+      <DataType>int(10) unsigned|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="18" parent="10" name="active">
+      <Position>2</Position>
+      <DataType>char(1)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="19" parent="10" name="id_user">
+      <Position>3</Position>
+      <DataType>int(10) unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="20" parent="10" name="id_task">
+      <Position>4</Position>
+      <DataType>int(10) unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="21" parent="10" name="date_activity_end">
+      <Position>5</Position>
+      <DataType>timestamp|0</DataType>
+    </column>
+    <column id="22" parent="10" name="date_activity_start">
+      <Position>6</Position>
+      <DataType>timestamp|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+    </column>
+    <index id="23" parent="10" name="activity_task_fk">
+      <ColNames>id_task</ColNames>
+    </index>
+    <index id="24" parent="10" name="activity_user_fk">
+      <ColNames>id_user</ColNames>
+    </index>
+    <key id="25" parent="10" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id_activity</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="26" parent="10" name="activity_user_fk">
+      <ColNames>id_user</ColNames>
+      <RefSchemaName>timedoodb</RefSchemaName>
+      <RefTableName>user</RefTableName>
+      <RefColNames>id_user</RefColNames>
+    </foreign-key>
+    <foreign-key id="27" parent="10" name="activity_task_fk">
+      <ColNames>id_task</ColNames>
+      <RefSchemaName>timedoodb</RefSchemaName>
+      <RefTableName>task</RefTableName>
+      <RefColNames>id_task</RefColNames>
+    </foreign-key>
+    <column id="28" parent="11" name="id_user">
+      <Position>1</Position>
+      <DataType>int(10) unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="29" parent="11" name="id_project">
+      <Position>2</Position>
+      <DataType>int(10) unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="30" parent="11" name="id_role">
+      <Position>3</Position>
+      <DataType>int(10) unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="31" parent="11" name="date_from">
+      <Position>4</Position>
+      <DataType>timestamp|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+    </column>
+    <index id="32" parent="11" name="contribute_project_fk">
+      <ColNames>id_project</ColNames>
+    </index>
+    <index id="33" parent="11" name="contribute_role_fk">
+      <ColNames>id_role</ColNames>
+    </index>
+    <key id="34" parent="11" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id_user
+id_project</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="35" parent="11" name="contribute_user_fk">
+      <ColNames>id_user</ColNames>
+      <RefSchemaName>timedoodb</RefSchemaName>
+      <RefTableName>user</RefTableName>
+      <RefColNames>id_user</RefColNames>
+    </foreign-key>
+    <foreign-key id="36" parent="11" name="contribute_project_fk">
+      <ColNames>id_project</ColNames>
+      <RefSchemaName>timedoodb</RefSchemaName>
+      <RefTableName>project</RefTableName>
+      <RefColNames>id_project</RefColNames>
+    </foreign-key>
+    <foreign-key id="37" parent="11" name="contribute_role_fk">
+      <ColNames>id_role</ColNames>
+      <RefSchemaName>timedoodb</RefSchemaName>
+      <RefTableName>role</RefTableName>
+      <RefColNames>id_role</RefColNames>
+    </foreign-key>
+    <column id="38" parent="12" name="id_user_from">
+      <Position>1</Position>
+      <DataType>int(10) unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="39" parent="12" name="id_user_to">
+      <Position>2</Position>
+      <DataType>int(10) unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="40" parent="12" name="id_project">
+      <Position>3</Position>
+      <DataType>int(10) unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="41" parent="12" name="date_invite">
+      <Position>4</Position>
+      <DataType>timestamp|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+    </column>
+    <index id="42" parent="12" name="invite_project_fk">
+      <ColNames>id_project</ColNames>
+    </index>
+    <index id="43" parent="12" name="invite_user_fkv2">
+      <ColNames>id_user_to</ColNames>
+    </index>
+    <key id="44" parent="12" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id_user_from
+id_user_to
+id_project</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="45" parent="12" name="invite_user_fk">
+      <ColNames>id_user_from</ColNames>
+      <RefSchemaName>timedoodb</RefSchemaName>
+      <RefTableName>user</RefTableName>
+      <RefColNames>id_user</RefColNames>
+    </foreign-key>
+    <foreign-key id="46" parent="12" name="invite_user_fkv2">
+      <ColNames>id_user_to</ColNames>
+      <RefSchemaName>timedoodb</RefSchemaName>
+      <RefTableName>user</RefTableName>
+      <RefColNames>id_user</RefColNames>
+    </foreign-key>
+    <foreign-key id="47" parent="12" name="invite_project_fk">
+      <ColNames>id_project</ColNames>
+      <RefSchemaName>timedoodb</RefSchemaName>
+      <RefTableName>project</RefTableName>
+      <RefColNames>id_project</RefColNames>
+    </foreign-key>
+    <column id="48" parent="13" name="id_project">
+      <Position>1</Position>
+      <DataType>int(10) unsigned|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="49" parent="13" name="project_name">
+      <Position>2</Position>
+      <DataType>varchar(50)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="50" parent="13" name="active">
+      <Position>3</Position>
+      <DataType>char(1)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="51" parent="13" name="client">
+      <Position>4</Position>
+      <DataType>varchar(50)|0</DataType>
+    </column>
+    <column id="52" parent="13" name="description">
+      <Position>5</Position>
+      <DataType>varchar(4000)|0</DataType>
+    </column>
+    <column id="53" parent="13" name="date_created">
+      <Position>6</Position>
+      <DataType>timestamp|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+    </column>
+    <key id="54" parent="13" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id_project</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="55" parent="14" name="id_role">
+      <Position>1</Position>
+      <DataType>int(10) unsigned|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="56" parent="14" name="description">
+      <Position>2</Position>
+      <DataType>varchar(20)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <key id="57" parent="14" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id_role</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="58" parent="15" name="id_task">
+      <Position>1</Position>
+      <DataType>int(10) unsigned|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="59" parent="15" name="task_name">
+      <Position>2</Position>
+      <DataType>varchar(100)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="60" parent="15" name="id_project">
+      <Position>3</Position>
+      <DataType>int(10) unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="61" parent="15" name="id_user_author">
+      <Position>4</Position>
+      <DataType>int(10) unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="62" parent="15" name="id_user_processor">
+      <Position>5</Position>
+      <DataType>int(10) unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="63" parent="15" name="date_created">
+      <Position>6</Position>
+      <DataType>timestamp|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+    </column>
+    <index id="64" parent="15" name="task_project_fk">
+      <ColNames>id_project</ColNames>
+    </index>
+    <index id="65" parent="15" name="task_user_fk">
+      <ColNames>id_user_author</ColNames>
+    </index>
+    <index id="66" parent="15" name="task_user_fkv2">
+      <ColNames>id_user_processor</ColNames>
+    </index>
+    <key id="67" parent="15" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id_task</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="68" parent="15" name="task_project_fk">
+      <ColNames>id_project</ColNames>
+      <RefSchemaName>timedoodb</RefSchemaName>
+      <RefTableName>project</RefTableName>
+      <RefColNames>id_project</RefColNames>
+    </foreign-key>
+    <foreign-key id="69" parent="15" name="task_user_fk">
+      <ColNames>id_user_author</ColNames>
+      <RefSchemaName>timedoodb</RefSchemaName>
+      <RefTableName>user</RefTableName>
+      <RefColNames>id_user</RefColNames>
+    </foreign-key>
+    <foreign-key id="70" parent="15" name="task_user_fkv2">
+      <ColNames>id_user_processor</ColNames>
+      <RefSchemaName>timedoodb</RefSchemaName>
+      <RefTableName>user</RefTableName>
+      <RefColNames>id_user</RefColNames>
+    </foreign-key>
+    <column id="71" parent="16" name="id_user">
+      <Position>1</Position>
+      <DataType>int(10) unsigned|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="72" parent="16" name="username">
+      <Position>2</Position>
+      <DataType>varchar(50)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="73" parent="16" name="password">
+      <Position>3</Position>
+      <DataType>varchar(100)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="74" parent="16" name="name">
+      <Position>4</Position>
+      <DataType>varchar(50)|0</DataType>
+    </column>
+    <column id="75" parent="16" name="surname">
+      <Position>5</Position>
+      <DataType>varchar(50)|0</DataType>
+    </column>
+    <column id="76" parent="16" name="email">
+      <Position>6</Position>
+      <DataType>varchar(100)|0</DataType>
+    </column>
+    <column id="77" parent="16" name="date_registration">
+      <Position>7</Position>
+      <DataType>timestamp|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+    </column>
+    <key id="78" parent="16" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id_user</ColNames>
+      <Primary>1</Primary>
+    </key>
+  </database-model>
+</dataSource>

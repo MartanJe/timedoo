@@ -1,0 +1,269 @@
+{block content}
+
+<script>
+
+    $(function () {
+        $.nette.init();// And you fly...
+    });
+
+</script>
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1>Projects
+            <small>Select Your Project</small>
+        </h1>
+    </div>
+
+    <div class="col-lg-12">
+
+        <ol class="breadcrumb">
+            <li class="active"><i class="fa fa-edit"></i> Projects</li>
+
+            <li class="active">
+                <button type="button" class="btn btn-success " data-toggle="modal" data-target="#myModal">Create New
+                    Project
+                </button>
+            </li>
+        </ol>
+
+
+    </div>
+
+</div><!-- /.row -->
+
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Filters</div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" value="Show archived"
+                                   id="myCheckbox" {if $showArchived} checked {/if}> Show archived
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-6">
+        <div n:snippet="messagesErr">
+            {foreach $flashes as $flash}
+                <div class="alert alert-{$flash->type}">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                        &times;
+                    </button>
+                    {$flash->message}
+                </div>
+            {/foreach}
+        </div>
+    </div>
+
+</div>
+<!-- MESSGES -->
+
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="table-responsive">
+
+            {snippet wholeTable}
+                <table class="table table-bordered table-hover tablesorter">
+                    <thead>
+                    <tr>
+                        <th>Project <i class="fa fa-sort"></i></th>
+                        <th>Client <i class="fa fa-sort"></i></th>
+                        <th>Your Role <i class="fa fa-sort"></i></th>
+                        <th>Status <i class="fa fa-sort"></i></th>
+                        <th>Options <i class=""></i></th>
+                    </tr>
+                    </thead>
+                    <tbody n:snippet="itemsContainer">
+                    <tr n:foreach="$projects as $project" class="clickable-row " data-href="#">
+
+                        <td class="{if $project->active == 0} deleted {/if}">
+                            <a n:href="Projects:project $project->id_project"> {$project->project_name} </a></td>
+                        <td class="{if $project->active == 0} deleted {/if}">
+                            {if $project->client != ""}
+                                <span class="label label-warning">{$project->client}</span>
+                            {else}
+                                <span class="gray"><i>(No Client)</i></span>
+                            {/if}
+
+                        </td>
+                        <td class="{if $project->active == 0} deleted {/if}">{if $project->id_role == 1}
+                                <span class="label label-success">Admin</span>
+                            {else}
+                                <span class="label label-default">User</span>
+                            {/if}
+                        </td>
+                        <td class="{if $project->active == 0} deleted {/if}">{$project->status}h</td>
+                        <td>
+                            {if $project->id_role == 1}
+                                <ol class="breadcrumb cum">
+                                    <li><a n:href="ProjectArchive! $project->id_project"
+                                                class="ajax"> {if $project->active == 0}  <i
+                                                    class="fa fa-refresh blue"></i>{else}  <i
+                                                    class="fa fa-check green"></i> {/if}  </a></li>
+                                    <li><a data-toggle="modal" onclick="return OptionsSelected(this)"
+                                           id={$project->id_project}  data-target="#myModal2"><i
+                                                    class="fa fa-edit orange"></i></a></li>
+                                    <li><a n:href="ProjectDelete! $project->id_project" class="ajax"><i
+                                                    class="fa fa-times red"></i></a></li>
+                                </ol>
+                            {else}
+                                <a n:href="ProjectLeave! $project->id_project" class="ajax"><i
+                                            class="fa fa-sign-out orange"></i></a>
+                            {/if}
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+                </table>
+
+                <!-- Page Specific Plugins -->
+                <script src="{$basePath}/js/tablesorter/jquery.tablesorter.js"></script>
+                <script src="{$basePath}/js/tablesorter/tables.js"></script>
+            {/snippet}
+
+            <!-- Modal  create-->
+            <div id="myModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Create project</h4>
+                        </div>
+
+                        <form n:name=newProjectForm class="form ajax">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label n:name=projectName>Project name:</label>
+                                    <input n:name=projectName class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label n:name=client>Client:</label>
+                                    <input n:name=client class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label n:name=description> Description: </label>
+                                    <textarea n:name=description class="form-control" rows="3"></textarea>
+                                </div>
+
+                                <div n:snippet="messages">
+                                    {foreach $flashes as $flash}
+                                        <div class="alert alert-{$flash->type}">
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                                &times;
+                                            </button>
+                                            {$flash->message}
+                                        </div>
+                                    {/foreach}
+                                </div>
+
+                            </div>
+
+                            <div class="modal-footer">
+                                <button n:name=createProject class="btn btn-primary">Create</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- Modal  create-->
+
+
+            <div id="myModal2" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Edit project</h4>
+                        </div>
+
+                        {snippet editFormSnippet}
+
+                            <form n:name=newEditForm class="form ajax">
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label n:name=projectName>Project name:</label>
+                                        <input n:name=projectName class="form-control">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label n:name=client>Client:</label>
+                                        <input n:name=client class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label n:name=description> Description: </label>
+                                        <textarea n:name=description class="form-control" rows="3"></textarea>
+                                    </div>
+
+                                    <div n:snippet="messagesSave">
+                                        {foreach $flashes as $flash}
+                                            <div class="alert alert-{$flash->type}">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                {$flash->message}
+                                            </div>
+                                        {/foreach}
+                                    </div>
+
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button n:name=saveProject class="btn btn-success" data-dismiss="modal"><span
+                                                class="fa fa-check"> </span>Save
+                                    </button>
+                                </div>
+                            </form>
+
+                        {/snippet}
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+    $("#myCheckbox").click(function () {
+        $.nette.ajax({
+            type: 'GET',
+            url: {link ArchivedSwitch!},
+            data: {
+                'value': $(this).is(':checked')
+            }
+        });
+    });
+
+    function OptionsSelected(me) {
+        $.nette.ajax({
+            type: 'GET',
+            url: {link ProjectEdit!},
+            data: {'idProject': me.id}
+        });
+    }
+
+
+</script>

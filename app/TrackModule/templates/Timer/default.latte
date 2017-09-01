@@ -1,0 +1,97 @@
+{define jsCallback}
+    <script>
+
+        $('#' + {$control["selectForm"][$input]->htmlId}).off('change').on('change', function () {
+            $.nette.ajax({
+                type: 'GET',
+                url: {link {$link}!},
+                data: {
+                    'value': $(this).val()
+                }
+            });
+        });
+    </script>
+{/define}
+
+{block content}
+<script>
+    $(function () {
+        $.nette.init();// And you fly...
+    });
+</script>
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1>Timer
+            <small>Tracking Base</small>
+        </h1>
+    </div>
+    <div class="col-lg-12">
+        <ol class="breadcrumb">
+            <li class="active"><i class="fa fa-cl"></i> Timer</li>
+            <li class="active"></li>
+        </ol>
+    </div>
+</div><!-- /.row -->
+
+
+<div class="row">
+    <div class="col-lg-6">
+        {snippet messages}
+            {foreach $flashes as $flash}
+                <div class="alert alert-success">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {$flash->message}
+                </div>
+            {/foreach}
+        {/snippet}
+    </div>
+</div><!-- /.row -->
+
+<div class="row">
+    <div class="col-lg-6">
+        {snippet bigSnippet}
+            {snippetArea wrapper}
+                <div class="row">
+                    <div class="panel panel-default">
+                        <div class="panel-heading  {if $active == 1} green_bg {/if}"> {if $active == 1} <strong>Tracking:
+                                <span class="timer"></span> </strong>{else} Not Tracking {/if} </div>
+                        <div class="panel-body">
+                            <form n:name=selectForm>
+                                <div class="form-group">
+                                    <label n:name=first>Project</label>
+                                    <select n:name=first class="form-control"></select>
+                                </div>
+                                <div class="form-group">
+                                    {snippet secondSnippet}
+                                        <label n:name=second>Task</label>
+                                        <select n:name=second class="form-control"></select>
+                                    {/snippet}
+                                </div>
+                                <input n:name=send class="btn btn-primary">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        $('.timer').countimer({
+
+                            initHours: {$h},
+                            initMinutes: {$m},
+                            initSeconds: {$s},
+                            autoStart: true
+                        });
+                    });
+                </script>
+
+            {/snippetArea}
+            {include jsCallback, input => first, link => firstChange}
+        {/snippet}
+
+    </div>
+</div><!-- /.row -->
+
+

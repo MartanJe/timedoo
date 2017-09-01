@@ -1,0 +1,13 @@
+# Config neon for Track Module
+
+parameters:
+        # Presentery.
+        administration: Core:Administration
+        article: Core:Article
+        contact: Core:Contact
+
+# Setup of anonymous services accesible through DI in whole app.
+services:
+        - App\TrackModule\Model\InviteManager
+        - App\TrackModule\Model\ProjectManager
+        - App\TrackModule\Model\TaskManager

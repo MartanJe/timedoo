@@ -1,0 +1,367 @@
+{block content}
+
+<script>
+
+    $(function () {
+        $.nette.init();// And you fly...
+    });
+
+</script>
+
+<div class="row">
+    <div class="col-lg-6">
+        <h1>Project
+            <small> {$ProjectName}</small>
+        </h1>
+    </div>
+
+    <div class="col-lg-2"></div>
+    <div class="col-lg-2"></div>
+
+    <div class="col-lg-2">
+        <h1><a n:href="Projects:default">
+                <button type="button" class="btn btn-success btn-lg"><span class="fa fa-check"> </span> Done</button>
+            </a></h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+
+        <ol class="breadcrumb">
+            <li class="active"><a n:href="default"><i class="fa fa-edit"></i> Projects </a></li>
+            <li class="active"> Project</li>
+            <li class="active"></li>
+        </ol>
+
+
+    </div>
+
+</div><!-- /.row -->
+
+<div class="row">
+    <div class="col-lg-6">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Project description</div>
+
+            <div class="panel-body">
+
+                {if $Description == ""}
+                    <i class="gray">(No description)</i>
+                {else}
+                    <i class="gray">    {$Description } </i>
+                {/if}
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{snippet TaskFilters}
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Filters</div>
+
+                <div class="panel-body">
+
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="Show archived"
+                                       id="myCheckbox" {if $showArchivedTasks} checked {/if}> Show archived
+                            </label>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+{/snippet}
+
+<div class="row">
+    <div class="col-lg-6">
+        <div n:snippet="messages">
+            {foreach $flashes as $flash}
+                <div class="alert alert-{$flash->type}">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {$flash->message}
+                </div>
+            {/foreach}
+        </div>
+    </div>
+
+
+</div>
+
+
+<div class="row">
+    <div class="col-lg-8">
+
+
+        {****** TWO TABS ******}
+        <div class="bs-example">
+
+            <ul class="nav nav-tabs" style="margin-bottom: 15px;">
+                <li class="active"><a href="#home" data-toggle="tab">Tasks</a></li>
+                <li><a href="#profile" data-toggle="tab">Team</a></li>
+            </ul>
+
+            <div id="myTabContent" class="tab-content">
+
+                {****** FIRST TAB ******}
+                <div class="tab-pane fade active in" id="home">
+
+
+                    {****** ADD TASK ******}
+                    {snippet addFormSnippet}
+                        <form n:name=newTaskForm class="form ajax">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+
+                                    <input n:name=taskName class="form-control" placeholder="Add new task...">
+                                </div>
+                            </div>
+                            <button n:name=createTask class="btn btn-success">Add</button>
+                        </form>
+                    {/snippet}
+
+                    {****** TASK TABLE ******}
+                    <div class="table-responsive">
+                        {snippet wholeTableTasks}
+                            <table class="table table-bordered table-hover tablesorter">
+                                <thead>
+                                <tr>
+                                    <th>Task <i class="fa fa-sort"></i></th>
+                                    <th>Author <i class="fa fa-sort"></i></th>
+                                    <th>Assignee <i class="fa fa-sort"></i></th>
+                                    <th>Status <i class="fa fa-sort"></i></th>
+                                    <th>Options <i class=""></i></th>
+                                </tr>
+                                </thead>
+
+                                <tbody n:snippet="itemsContainer">
+                                <tr n:foreach="$Tasks as $task" class="clickable-row" data-href="#">
+
+                                    <td class="{if $task->active == 0} deleted {/if}">{$task->task_name} </td>
+
+                                    <td class="{if $task->active == 0} deleted {/if}"><span
+                                                class="gray"><i>{$task->author}</i></span></td>
+
+                                    {******* PRIRAZENI PROJEKTU *******}
+                                    <td class="{if $task->active == 0} deleted {/if}">
+                                        <span class="gray"><i>{$task->assignee}</i></span>
+                                    </td>
+
+                                    <td class="{if $task->active == 0} deleted {/if}">{$task->status} h</td>
+
+
+                                    {******* OPTIONS *******}
+                                    <td>
+                                        {if $userRole == 1 || $task->author == $task->assignee }
+                                            <ol class="breadcrumb cum">
+                                                <li><a n:href="TaskArchive! $task->id_task"
+                                                            class="ajax">{if $task->active == 0}  <i
+                                                                class="fa fa-refresh blue"></i>{else}  <i
+                                                                class="fa fa-check green"></i> {/if}</a></li>
+                                                <li><a data-toggle="modal" onclick="return OpenSelected(this)"
+                                                       id={$task->id_task}  data-target="#myModal2"><i
+                                                                class="fa fa-edit orange"></i></a></li>
+                                                <li><a n:href="TaskDelete! $task->id_task" class="ajax"><i
+                                                                class="fa fa-times red"></i></a></li>
+                                            </ol>
+                                        {else}
+                                            <ol class="breadcrumb cum">
+                                                <li><a n:href="TaskArchive! $task->id_task"
+                                                            class="ajax">{if $task->active == 0}  <i
+                                                                class="fa fa-refresh blue"></i>{else}  <i
+                                                                class="fa fa-check green"></i> {/if}</a></li>
+                                            </ol>
+                                        {/if}
+                                    </td>
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        {/snippet}
+                    </div>
+
+                </div>
+
+
+                {****** SECOND TAB ******}
+                <div class="tab-pane fade" id="profile">
+
+                    {****** ADD MEMBER ******}
+                    {if $userRole == 1}
+                        {snippet addFormSnippetMember}
+                            <form n:name=newMemberForm class="form ajax">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+
+                                        <input n:name=memberName class="form-control" placeholder="Add new member...">
+                                    </div>
+                                </div>
+                                <button n:name=addMember class="btn btn-success">Add</button>
+                            </form>
+                        {/snippet}
+                    {/if}
+
+                    {****** MEMBER TABLE ******}
+                    <div class="table-responsive">
+
+                        {snippet wholeTableMembers}
+                            <table class="table table-bordered table-hover tablesorter">
+                                <thead>
+                                <tr>
+                                    <th>Member <i class="fa fa-sort"></i></th>
+                                    <th>Role <i class="fa fa-sort"></i></th>
+                                    {if $userRole == 1}
+                                        <th>Change Role <i class="fa"></i></th>
+                                        <th>Options <i class="fa"></i></th>
+                                    {/if}
+                                </tr>
+                                </thead>
+
+                                <tbody n:snippet="itemsContainerMembers">
+                                <tr n:foreach="$Members as $member" class="clickable-row" data-href="#">
+
+                                    <td> {$member->username} </td>
+
+                                    {********** ROLE *********}
+                                    <td>
+                                        {if $member->id_role ==1}
+                                            <span class="label label-success">Admin</span>
+                                        {else}
+                                            <span class="label label-default">User</span>
+                                        {/if}
+                                    </td>
+
+                                    {if $userRole == 1 }
+                                        {******** CHANGE ROLE*****}
+                                        <td>
+                                            {if $member->id_user != $user->getID()}
+                                                <p><input class=' ajax' onclick="return OptionsSelected(this)"
+                                                          type=checkbox name="sel[]"
+                                                          value={$member->id_user} {if $member->id_role == 1 } checked {/if}>
+                                                    Admin </p>
+                                            {/if}
+                                        </td>
+
+                                        {******** OPTIONS *******}
+                                        <td>
+                                            {if $member->id_user != $user->getID()}
+                                                <ol class="breadcrumb cum">
+                                                    <li><a n:href="MemberDelete! $member->id_user" class="ajax"><i
+                                                                    class="fa fa-times red"></i></a></li>
+                                                </ol>
+                                            {/if}
+                                        </td>
+
+                                    {/if}
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        {/snippet}
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="myModal2" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Edit task</h4>
+                    </div>
+
+                    {snippet editTaskSnippet}
+                        <form n:name=newEditTaskForm class="form ajax">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label n:name=taskName>Task name:</label>
+                                    <input n:name=taskName class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label n:name=assignee>Assignee:</label>
+                                    <select n:name=assignee class="form-control"></select>
+                                </div>
+
+                                <div n:snippet="messagesSave">
+                                    {foreach $flashes as $flash}
+                                        <div class="alert alert-{$flash->type}">
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                                &times;
+                                            </button>
+                                            {$flash->message}
+                                        </div>
+                                    {/foreach}
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button n:name=saveTask class="btn btn-success"><span class="fa fa-check"> </span>Save
+                                </button>
+                            </div>
+                        </form>
+                    {/snippet}
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+
+    $("#myCheckbox").click(function () {
+        $.nette.ajax({
+            type: 'GET',
+            url: {link ArchivedSwitchTasks!},
+            data: {
+                'value': $(this).is(':checked')
+            }
+        });
+    });
+
+
+    function OpenSelected(me) {
+        $.nette.ajax({
+            type: 'GET',
+            url: {link TaskEdit!},
+            data: {'idTask': me.id}
+        });
+    }
+
+    function OptionsSelected(me) {
+        $.nette.ajax({
+            type: 'GET',
+            url: {link AdminSwitch!},
+            data: {'userID': me.value}
+        });
+    }
+
+</script>
+
+
+
+
+
+
+
+
+
+

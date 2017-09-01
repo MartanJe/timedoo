@@ -1,0 +1,36 @@
+{block content}
+
+<div id="intro">
+
+    <h1>Register</h1>
+
+    <div style=" width: 300px; margin: 0 auto;">
+        <form n:name=registerForm class=form>
+            <div class="form-group">
+                <label n:name=username>Username:</label>
+                <input n:name=username class="form-control">
+            </div>
+            <div class="form-group">
+                <label n:name=password>Password:</label>
+                <input n:name=password class="form-control">
+            </div>
+            <div class="form-group">
+                <label n:name=password2>Password confirm:</label>
+                <input n:name=password2 class="form-control">
+            </div>
+            <p><input n:name=register class="btn"></p>
+        </form>
+        Already member? <a n:href="Login:default">Login here.</a>
+    </div>
+
+    <div style=" width: 300px; margin: 0 auto;">
+        {foreach $flashes as $flash}
+
+            <div class="alert alert-{$flash->type}">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                {$flash->message}
+            </div>
+        {/foreach}
+    </div>
+
+</div>
