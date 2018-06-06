@@ -10,7 +10,7 @@ simple timemanager insipred by toggl
 
 
 ### Live demo
-http://timedoo.cz
+[See demo](http://timedoo.cz)
 
 ## Built With
 
