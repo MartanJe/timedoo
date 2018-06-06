@@ -14,10 +14,10 @@ namespace Nette\Caching;
 interface IBulkReader
 {
 
-    /**
-     * Reads from cache in bulk.
-     * @param  string
-     * @return array key => value pairs, missing items are omitted
-     */
-    function bulkRead(array $keys);
+	/**
+	 * Reads from cache in bulk.
+	 * @param  string
+	 * @return array key => value pairs, missing items are omitted
+	 */
+	function bulkRead(array $keys);
 }

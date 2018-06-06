@@ -12,20 +12,20 @@ use Nette;
 
 class Helpers
 {
-    use Nette\StaticClass;
+	use Nette\StaticClass;
 
-    /**
-     * Returns declaring class or trait.
-     * @return \ReflectionClass
-     * @internal
-     */
-    public static function getDeclaringClass(\ReflectionProperty $prop)
-    {
-        foreach ($prop->getDeclaringClass()->getTraits() as $trait) {
-            if ($trait->hasProperty($prop->getName())) {
-                return self::getDeclaringClass($trait->getProperty($prop->getName()));
-            }
-        }
-        return $prop->getDeclaringClass();
-    }
+	/**
+	 * Returns declaring class or trait.
+	 * @return \ReflectionClass
+	 * @internal
+	 */
+	public static function getDeclaringClass(\ReflectionProperty $prop)
+	{
+		foreach ($prop->getDeclaringClass()->getTraits() as $trait) {
+			if ($trait->hasProperty($prop->getName())) {
+				return self::getDeclaringClass($trait->getProperty($prop->getName()));
+			}
+		}
+		return $prop->getDeclaringClass();
+	}
 }

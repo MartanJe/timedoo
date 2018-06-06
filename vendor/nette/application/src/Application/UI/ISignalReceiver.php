@@ -14,9 +14,9 @@ namespace Nette\Application\UI;
 interface ISignalReceiver
 {
 
-    /**
-     * @param  string
-     * @return void
-     */
-    function signalReceived($signal); // handleSignal
+	/**
+	 * @param  string
+	 * @return void
+	 */
+	function signalReceived($signal); // handleSignal
 }

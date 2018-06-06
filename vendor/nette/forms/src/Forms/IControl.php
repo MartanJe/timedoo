@@ -14,33 +14,33 @@ namespace Nette\Forms;
 interface IControl
 {
 
-    /**
-     * Sets control's value.
-     * @param  mixed
-     * @return static
-     */
-    function setValue($value);
+	/**
+	 * Sets control's value.
+	 * @param  mixed
+	 * @return static
+	 */
+	function setValue($value);
 
-    /**
-     * Returns control's value.
-     * @return mixed
-     */
-    function getValue();
+	/**
+	 * Returns control's value.
+	 * @return mixed
+	 */
+	function getValue();
 
-    /**
-     * @return void
-     */
-    function validate();
+	/**
+	 * @return void
+	 */
+	function validate();
 
-    /**
-     * Returns errors corresponding to control.
-     * @return array
-     */
-    function getErrors();
+	/**
+	 * Returns errors corresponding to control.
+	 * @return array
+	 */
+	function getErrors();
 
-    /**
-     * Is control value excluded from $form->getValues() result?
-     * @return bool
-     */
-    function isOmitted();
+	/**
+	 * Is control value excluded from $form->getValues() result?
+	 * @return bool
+	 */
+	function isOmitted();
 }

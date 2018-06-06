@@ -2,11 +2,11 @@
 
 namespace App\TrackModule\Presenters;
 
-use App\Model\UserManager;
 use App\Presenters\BasePresenter;
 use App\TrackModule\Model\InviteManager;
 use App\TrackModule\Model\ProjectManager;
 use App\TrackModule\Model\TaskManager;
+use App\Model\UserManager;
 use Nette\Application\UI\Form;
 
 class ProjectsPresenter extends BasePresenter
@@ -46,7 +46,8 @@ class ProjectsPresenter extends BasePresenter
     {
 
 
-        if (!$this->isMyProject($idProject)) {
+        if(! $this->isMyProject($idProject))
+        {
             $this->flashMessage("Error: project not found!", 'danger');
             $this->redrawControl('messagesErr');
 
@@ -72,26 +73,33 @@ class ProjectsPresenter extends BasePresenter
 ///****************************************************************************************************
 
     //CREATE COMPONENT NEW PROJECT
-
-    private function isMyProject($idProject)
+    protected function createComponentNewProjectForm()
     {
-        $project = $this->m_projectManager->getProject($idProject);
-
-        if (!$project) {
-            return false;
-        }
-
-        $contribute = $this->m_projectManager->getContribute($this->user->getId(), $idProject);
-
-        if (!$contribute) {
-            return false;
-        }
-
-        return true;
+        $form = new Form;
+        $form->getElementPrototype()->class('ajax');
+        $form->addText('projectName', 'Project Name')->setRequired();
+        $form->addText('client', 'Client');
+        $form->addTextArea('description', 'Description');
+        $form->addSubmit('createProject', 'Create project');
+        $form->onSuccess[] = [$this, 'createProjectFormSucceeded'];;
+        return $form;
     }
 
     //CREATE COMPONENT EDIT PROJECT
+    protected function createComponentNewEditForm()
+    {
+        $form = new Form;
+        $form->getElementPrototype()->class('ajax');
+        $form->addText('projectName', 'Project Name')->setRequired();
+        $form->addText('client', 'Client');
+        $form->addTextArea('description', 'Description');
+        $form->addSubmit('saveProject', 'Create project');
+        $form->addHidden('editHidden');
+        $form->onSuccess[] = [$this, 'saveProjectFormSucceeded'];
+        return $form;
+    }
 
+    //NEW PROJECT SUCCESS
     public function createProjectFormSucceeded($form)
     {
         if (!$this->isAjax()) {
@@ -118,18 +126,7 @@ class ProjectsPresenter extends BasePresenter
         }
     }
 
-    //NEW PROJECT SUCCESS
-
-    protected function redrawTableProjects()
-    {
-        $show = $this->m_userManager->getUserShowProject($this->user->getId());
-        $this->template->projects = $this->m_projectManager->getUserProjects($this->user->getId(), !$show);
-        $this->redrawControl('wholeTable');
-        return true;
-    }
-
     //EDIT PROJECT SUCCESS
-
     public function saveProjectFormSucceeded($form)
     {
         $projectID = $form->getValues()->editHidden;
@@ -155,7 +152,17 @@ class ProjectsPresenter extends BasePresenter
 ///**************************************************************************************************
 
     //CREATE COMPONENT NEW TASK
+    protected function createComponentNewTaskForm()
+    {
+        $form = new Form;
+        $form->getElementPrototype()->class('ajax');
+        $form->addText('taskName', 'Task Name')->setRequired();
+        $form->addSubmit('createTask', 'Create task');
+        $form->onSuccess[] = [$this, 'createTaskFormSucceeded'];;
+        return $form;
+    }
 
+    //NEW TASK SUCCESS
     public function createTaskFormSucceeded(Form $form)
     {
         if (!$this->isAjax()) {
@@ -180,22 +187,20 @@ class ProjectsPresenter extends BasePresenter
         }
     }
 
-    //NEW TASK SUCCESS
-
-    protected function redrawTableTasks()
+    //CREATE COMPONENT EDIT TASK
+    protected function createComponentNewEditTaskForm()
     {
-        $projectID = $this->m_projectManager->getProjectByName($this->template->ProjectName)['id_project'];
-
-        $showArchived = $this->m_userManager->getUserShowTasks($this->user->getId());
-        $this->template->Tasks = $this->m_taskManager->getTasks($this->user->getId(), $projectID, $showArchived);
-        $this['newTaskForm']['taskName']->setValue("");
-        $this->redrawControl('wholeTableTasks');
-        $this->redrawControl('addFormSnippet');
-        return true;
+        $form = new Form;
+        $form->getElementPrototype()->class('ajax');
+        $form->addText('taskName', 'Task Name')->setRequired();
+        $form->addSelect('assignee', 'Assignee');
+        $form->addSubmit('saveTask', 'Create project');
+        $form->addHidden('editHidden');
+        $form->onSuccess[] = [$this, 'saveTaskFormSucceeded'];
+        return $form;
     }
 
-    //CREATE COMPONENT EDIT TASK
-
+    //EDIT TASK SUCCESS
     public function saveTaskFormSucceeded(Form $form)
     {
         $taskID = $form->getValues()->editHidden;
@@ -212,16 +217,45 @@ class ProjectsPresenter extends BasePresenter
             $this->flashMessage("Error: project name already used!", 'danger');
             $this->redrawControl('messagesSave');
             return false;
-        } else {
-            $this->m_taskManager->updateTask($taskID, $newName, $newAsigneID);
+        }
+
+        else {
+            $this->m_taskManager->updateTask($taskID,$newName, $newAsigneID);
             $this->flashMessage("All changes saved. You can close the window now.", 'success');
             $this->redrawControl('messagesSave');
             return $this->redrawTableTasks();
         }
     }
 
-    //EDIT TASK SUCCESS
 
+
+
+
+
+
+
+
+
+
+
+
+///***************************************************************************************************
+///******************************* MEMBERS ***********************************************************
+///*******************************  FORMS *********************************************************
+///***************************************************************************************************
+
+    //CREATE COMPONENT NEW MEMBER
+    protected function createComponentNewMemberForm()
+    {
+        $form = new Form;
+        $form->getElementPrototype()->class('ajax');
+        $form->addText('memberName', 'Member Name')->setRequired();
+        $form->addSubmit('addMember', 'Add member');
+        $form->onSuccess[] = [$this, 'addMemberFormSucceeded'];;
+        return $form;
+    }
+
+    //NEW MEMBER SUCCESS
     public function addMemberFormSucceeded($form)
     {
         if (!$this->isAjax()) {
@@ -265,36 +299,10 @@ class ProjectsPresenter extends BasePresenter
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
 ///***************************************************************************************************
-///******************************* MEMBERS ***********************************************************
-///*******************************  FORMS *********************************************************
-///***************************************************************************************************
-
-    //CREATE COMPONENT NEW MEMBER
-
-    protected function redrawTableMembers()
-    {
-        $project = $this->template->ProjectName;
-        $dataProject = $this->m_projectManager->getProjectByName($project);
-        $this->template->Members = $this->m_projectManager->getMembers($dataProject['id_project']);
-        $this->redrawControl('wholeTableMembers');
-        return true;
-    }
-
-    //NEW MEMBER SUCCESS
-
+///******************************* PROJECT ***********************************************************
+///******************************  HANDLERS *********************************************************
+///****************************************************************************************************
     public function handleArchivedSwitch($userID = '')
     {
         if (!$this->isAjax()) {
@@ -306,11 +314,6 @@ class ProjectsPresenter extends BasePresenter
         $this->template->projects = $this->m_projectManager->getUserProjects($this->user->getId(), !$show);
         $this->redrawControl('wholeTable');
     }
-
-///***************************************************************************************************
-///******************************* PROJECT ***********************************************************
-///******************************  HANDLERS *********************************************************
-///****************************************************************************************************
 
     public function handleProjectEdit($idProject)
     {
@@ -332,9 +335,8 @@ class ProjectsPresenter extends BasePresenter
 
     public function handleProjectDelete($idProject)
     {
-        if (!$this->isAjax()) {
-            $this->redirect($this);
-        }
+        if (!$this->isAjax())
+        {$this->redirect($this);}
 
         $this->m_projectManager->deleteProject($idProject);
         return $this->redrawTableProjects();
@@ -342,13 +344,18 @@ class ProjectsPresenter extends BasePresenter
 
     public function handleProjectLeave($idProject)
     {
-        if (!$this->isAjax()) {
-            $this->redirect($this);
-        }
+        if (!$this->isAjax())
+        {$this->redirect($this);}
 
         $this->m_projectManager->removeUser($this->user->getId(), $idProject);
         return $this->redrawTableProjects();
     }
+
+
+///***************************************************************************************************
+///********************************* TASK ***********************************************************
+///******************************  HANDLERS *********************************************************
+///****************************************************************************************************
 
     public function handleArchivedSwitchTasks($value = '')
     {
@@ -359,37 +366,34 @@ class ProjectsPresenter extends BasePresenter
         return $this->redrawTableTasks();
     }
 
-
-///***************************************************************************************************
-///********************************* TASK ***********************************************************
-///******************************  HANDLERS *********************************************************
-///****************************************************************************************************
-
-    public function handleTaskEdit($idTask)
-    {
-        $task = $this->m_taskManager->getTask($idTask);
-        $this['newEditTaskForm']['taskName']->setValue($task['task_name']);
-        $this['newEditTaskForm']['assignee']->setItems($this->getMembers($idTask))->setValue($this->m_taskManager->getTask($idTask)['id_user_processor']);
-        $this['newEditTaskForm']['editHidden']->setValue($idTask);
-
-        $this->redrawControl('editTaskSnippet');
-    }
-
     private function getMembers($idTask)
     {
         $project = $this->template->ProjectName;
         $dataProject = $this->m_projectManager->getProjectByName($project);
         $members = $this->m_projectManager->getMembers($dataProject['id_project']);
         $currentMemberID = $this->m_taskManager->getTask($idTask)['id_user_processor'];
-        $memberArray = array($currentMemberID => $this->m_userManager->getUserByID($currentMemberID)['username']);
+        $memberArray = array( $currentMemberID => $this->m_userManager->getUserByID($currentMemberID)['username'] );
 
         foreach ($members as $member) {
             //pokud to neni ten current
-            if ($member->id_user != $currentMemberID)
-                $memberArray[] = array($member->id_user => "$member->username");
+            if($member->id_user != $currentMemberID)
+            $memberArray[] = array($member->id_user => "$member->username");
         }
         return $memberArray;
     }
+
+
+    public function handleTaskEdit($idTask)
+    {
+        $task = $this->m_taskManager->getTask($idTask);
+        $this['newEditTaskForm']['taskName']->setValue($task['task_name']);
+        $this['newEditTaskForm']['assignee']->setItems( $this->getMembers($idTask) )->setValue( $this->m_taskManager->getTask($idTask)['id_user_processor'] );
+        $this['newEditTaskForm']['editHidden']->setValue($idTask);
+
+        $this->redrawControl('editTaskSnippet');
+    }
+
+
 
     public function handleTaskArchive($idTask)
     {
@@ -411,22 +415,20 @@ class ProjectsPresenter extends BasePresenter
         return $this->redrawTableTasks();
     }
 
-    public function handleMemberDelete($idMember)
-    {
-        if (!$this->isAjax()) {
-            $this->redirect($this);
-        }
-
-        $projectID = $this->m_projectManager->getProjectByName($this->template->ProjectName)['id_project'];
-        $this->m_projectManager->removeUser($idMember, $projectID);
-        return $this->redrawTableMembers();
-    }
-
 
 ///***************************************************************************************************
 ///******************************** MEMBER ***********************************************************
 ///******************************  HANDLERS *********************************************************
 ///****************************************************************************************************
+    public function handleMemberDelete($idMember)
+    {
+        if (!$this->isAjax())
+        {$this->redirect($this);}
+
+        $projectID = $this->m_projectManager->getProjectByName($this->template->ProjectName)['id_project'];
+        $this->m_projectManager->removeUser($idMember, $projectID);
+        return $this->redrawTableMembers();
+    }
 
     public function handleAdminSwitch($userID)
     {
@@ -439,64 +441,56 @@ class ProjectsPresenter extends BasePresenter
         return $this->redrawTableMembers();
     }
 
-    protected function createComponentNewProjectForm()
-    {
-        $form = new Form;
-        $form->getElementPrototype()->class('ajax');
-        $form->addText('projectName', 'Project Name')->setRequired();
-        $form->addText('client', 'Client');
-        $form->addTextArea('description', 'Description');
-        $form->addSubmit('createProject', 'Create project');
-        $form->onSuccess[] = [$this, 'createProjectFormSucceeded'];;
-        return $form;
-    }
-
 ///************************************************************************************************
 ///******************************** REDRAWERS ***********************************************************
 ///************************************************************************************************
 
-    protected function createComponentNewEditForm()
+    protected function redrawTableTasks()
     {
-        $form = new Form;
-        $form->getElementPrototype()->class('ajax');
-        $form->addText('projectName', 'Project Name')->setRequired();
-        $form->addText('client', 'Client');
-        $form->addTextArea('description', 'Description');
-        $form->addSubmit('saveProject', 'Create project');
-        $form->addHidden('editHidden');
-        $form->onSuccess[] = [$this, 'saveProjectFormSucceeded'];
-        return $form;
+        $projectID = $this->m_projectManager->getProjectByName($this->template->ProjectName)['id_project'];
+
+        $showArchived = $this->m_userManager->getUserShowTasks($this->user->getId());
+        $this->template->Tasks = $this->m_taskManager->getTasks($this->user->getId(), $projectID, $showArchived);
+        $this['newTaskForm']['taskName']->setValue("");
+        $this->redrawControl('wholeTableTasks');
+        $this->redrawControl('addFormSnippet');
+        return true;
     }
 
-    protected function createComponentNewTaskForm()
+    protected function redrawTableMembers()
     {
-        $form = new Form;
-        $form->getElementPrototype()->class('ajax');
-        $form->addText('taskName', 'Task Name')->setRequired();
-        $form->addSubmit('createTask', 'Create task');
-        $form->onSuccess[] = [$this, 'createTaskFormSucceeded'];;
-        return $form;
+        $project = $this->template->ProjectName;
+        $dataProject = $this->m_projectManager->getProjectByName($project);
+        $this->template->Members = $this->m_projectManager->getMembers($dataProject['id_project']);
+        $this->redrawControl('wholeTableMembers');
+        return true;
     }
 
-    protected function createComponentNewEditTaskForm()
+
+    protected function redrawTableProjects()
     {
-        $form = new Form;
-        $form->getElementPrototype()->class('ajax');
-        $form->addText('taskName', 'Task Name')->setRequired();
-        $form->addSelect('assignee', 'Assignee');
-        $form->addSubmit('saveTask', 'Create project');
-        $form->addHidden('editHidden');
-        $form->onSuccess[] = [$this, 'saveTaskFormSucceeded'];
-        return $form;
+        $show = $this->m_userManager->getUserShowProject($this->user->getId());
+        $this->template->projects = $this->m_projectManager->getUserProjects($this->user->getId(), !$show);
+        $this->redrawControl('wholeTable');
+        return true;
     }
 
-    protected function createComponentNewMemberForm()
+    private function isMyProject($idProject)
     {
-        $form = new Form;
-        $form->getElementPrototype()->class('ajax');
-        $form->addText('memberName', 'Member Name')->setRequired();
-        $form->addSubmit('addMember', 'Add member');
-        $form->onSuccess[] = [$this, 'addMemberFormSucceeded'];;
-        return $form;
+        $project = $this->m_projectManager->getProject($idProject);
+
+        if(!$project)
+        {
+            return false;
+        }
+
+        $contribute = $this->m_projectManager->getContribute($this->user->getId(),$idProject);
+
+        if(!$contribute)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

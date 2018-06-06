@@ -15,257 +15,270 @@ use Nette;
  */
 class Structure implements IStructure
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    /** @var Connection */
-    protected $connection;
+	/** @var Connection */
+	protected $connection;
 
-    /** @var Nette\Caching\Cache */
-    protected $cache;
+	/** @var Nette\Caching\Cache */
+	protected $cache;
 
-    /** @var array */
-    protected $structure;
+	/** @var array */
+	protected $structure;
 
-    /** @var bool */
-    protected $isRebuilt = false;
-
-
-    public function __construct(Connection $connection, Nette\Caching\IStorage $cacheStorage)
-    {
-        $this->connection = $connection;
-        $this->cache = new Nette\Caching\Cache($cacheStorage, 'Nette.Database.Structure.' . md5($this->connection->getDsn()));
-    }
+	/** @var bool */
+	protected $isRebuilt = false;
 
 
-    public function getTables()
-    {
-        $this->needStructure();
-        return $this->structure['tables'];
-    }
+	public function __construct(Connection $connection, Nette\Caching\IStorage $cacheStorage)
+	{
+		$this->connection = $connection;
+		$this->cache = new Nette\Caching\Cache($cacheStorage, 'Nette.Database.Structure.' . md5($this->connection->getDsn()));
+	}
 
-    protected function needStructure()
-    {
-        if ($this->structure !== null) {
-            return;
-        }
 
-        $this->structure = $this->cache->load('structure', [$this, 'loadStructure']);
-    }
+	public function getTables()
+	{
+		$this->needStructure();
+		return $this->structure['tables'];
+	}
 
-    public function getPrimaryKeySequence($table)
-    {
-        $this->needStructure();
-        $table = $this->resolveFQTableName($table);
 
-        if (!$this->connection->getSupplementalDriver()->isSupported(ISupplementalDriver::SUPPORT_SEQUENCE)) {
-            return null;
-        }
+	public function getColumns($table)
+	{
+		$this->needStructure();
+		$table = $this->resolveFQTableName($table);
 
-        $autoincrementPrimaryKeyName = $this->getPrimaryAutoincrementKey($table);
-        if (!$autoincrementPrimaryKeyName) {
-            return null;
-        }
+		return $this->structure['columns'][$table];
+	}
 
-        // Search for sequence from simple primary key
-        foreach ($this->structure['columns'][$table] as $columnMeta) {
-            if ($columnMeta['name'] === $autoincrementPrimaryKeyName) {
-                return isset($columnMeta['vendor']['sequence']) ? $columnMeta['vendor']['sequence'] : null;
-            }
-        }
 
-        return null;
-    }
+	public function getPrimaryKey($table)
+	{
+		$this->needStructure();
+		$table = $this->resolveFQTableName($table);
 
-    protected function resolveFQTableName($table)
-    {
-        $name = strtolower($table);
-        if (isset($this->structure['columns'][$name])) {
-            return $name;
-        }
+		if (!isset($this->structure['primary'][$table])) {
+			return null;
+		}
 
-        if (isset($this->structure['aliases'][$name])) {
-            return $this->structure['aliases'][$name];
-        }
+		return $this->structure['primary'][$table];
+	}
 
-        if (!$this->isRebuilt()) {
-            $this->rebuild();
-            return $this->resolveFQTableName($table);
-        }
 
-        throw new Nette\InvalidArgumentException("Table '$name' does not exist.");
-    }
+	public function getPrimaryAutoincrementKey($table)
+	{
+		$primaryKey = $this->getPrimaryKey($table);
+		if (!$primaryKey) {
+			return null;
+		}
 
-    public function isRebuilt()
-    {
-        return $this->isRebuilt;
-    }
+		// Search for autoincrement key from multi primary key
+		if (is_array($primaryKey)) {
+			$keys = array_flip($primaryKey);
+			foreach ($this->getColumns($table) as $column) {
+				if (isset($keys[$column['name']]) && $column['autoincrement']) {
+					return $column['name'];
+				}
+			}
+			return null;
+		}
 
-    public function rebuild()
-    {
-        $this->structure = $this->loadStructure();
-        $this->cache->save('structure', $this->structure);
-    }
+		// Search for autoincrement key from simple primary key
+		foreach ($this->getColumns($table) as $column) {
+			if ($column['name'] == $primaryKey) {
+				return $column['autoincrement'] ? $column['name'] : null;
+			}
+		}
 
-    /**
-     * @internal
-     */
-    public function loadStructure()
-    {
-        $driver = $this->connection->getSupplementalDriver();
+		return null;
+	}
 
-        $structure = [];
-        $structure['tables'] = $driver->getTables();
 
-        foreach ($structure['tables'] as $tablePair) {
-            if (isset($tablePair['fullName'])) {
-                $table = $tablePair['fullName'];
-                $structure['aliases'][strtolower($tablePair['name'])] = strtolower($table);
-            } else {
-                $table = $tablePair['name'];
-            }
+	public function getPrimaryKeySequence($table)
+	{
+		$this->needStructure();
+		$table = $this->resolveFQTableName($table);
 
-            $structure['columns'][strtolower($table)] = $columns = $driver->getColumns($table);
+		if (!$this->connection->getSupplementalDriver()->isSupported(ISupplementalDriver::SUPPORT_SEQUENCE)) {
+			return null;
+		}
 
-            if (!$tablePair['view']) {
-                $structure['primary'][strtolower($table)] = $this->analyzePrimaryKey($columns);
-                $this->analyzeForeignKeys($structure, $table);
-            }
-        }
+		$autoincrementPrimaryKeyName = $this->getPrimaryAutoincrementKey($table);
+		if (!$autoincrementPrimaryKeyName) {
+			return null;
+		}
 
-        if (isset($structure['hasMany'])) {
-            foreach ($structure['hasMany'] as &$table) {
-                uksort($table, function ($a, $b) {
-                    return strlen($a) - strlen($b);
-                });
-            }
-        }
+		// Search for sequence from simple primary key
+		foreach ($this->structure['columns'][$table] as $columnMeta) {
+			if ($columnMeta['name'] === $autoincrementPrimaryKeyName) {
+				return isset($columnMeta['vendor']['sequence']) ? $columnMeta['vendor']['sequence'] : null;
+			}
+		}
 
-        $this->isRebuilt = true;
+		return null;
+	}
 
-        return $structure;
-    }
 
-    protected function analyzePrimaryKey(array $columns)
-    {
-        $primary = [];
-        foreach ($columns as $column) {
-            if ($column['primary']) {
-                $primary[] = $column['name'];
-            }
-        }
+	public function getHasManyReference($table, $targetTable = null)
+	{
+		$this->needStructure();
+		$table = $this->resolveFQTableName($table);
 
-        if (count($primary) === 0) {
-            return null;
-        } elseif (count($primary) === 1) {
-            return reset($primary);
-        } else {
-            return $primary;
-        }
-    }
+		if ($targetTable) {
+			$targetTable = $this->resolveFQTableName($targetTable);
+			foreach ($this->structure['hasMany'][$table] as $key => $value) {
+				if (strtolower($key) === $targetTable) {
+					return $this->structure['hasMany'][$table][$key];
+				}
+			}
 
-    protected function analyzeForeignKeys(&$structure, $table)
-    {
-        $lowerTable = strtolower($table);
-        foreach ($this->connection->getSupplementalDriver()->getForeignKeys($table) as $row) {
-            $structure['belongsTo'][$lowerTable][$row['local']] = $row['table'];
-            $structure['hasMany'][strtolower($row['table'])][$table][] = $row['local'];
-        }
+			return null;
 
-        if (isset($structure['belongsTo'][$lowerTable])) {
-            uksort($structure['belongsTo'][$lowerTable], function ($a, $b) {
-                return strlen($a) - strlen($b);
-            });
-        }
-    }
+		} else {
+			if (!isset($this->structure['hasMany'][$table])) {
+				return [];
+			}
+			return $this->structure['hasMany'][$table];
+		}
+	}
 
-    public function getPrimaryAutoincrementKey($table)
-    {
-        $primaryKey = $this->getPrimaryKey($table);
-        if (!$primaryKey) {
-            return null;
-        }
 
-        // Search for autoincrement key from multi primary key
-        if (is_array($primaryKey)) {
-            $keys = array_flip($primaryKey);
-            foreach ($this->getColumns($table) as $column) {
-                if (isset($keys[$column['name']]) && $column['autoincrement']) {
-                    return $column['name'];
-                }
-            }
-            return null;
-        }
+	public function getBelongsToReference($table, $column = null)
+	{
+		$this->needStructure();
+		$table = $this->resolveFQTableName($table);
 
-        // Search for autoincrement key from simple primary key
-        foreach ($this->getColumns($table) as $column) {
-            if ($column['name'] == $primaryKey) {
-                return $column['autoincrement'] ? $column['name'] : null;
-            }
-        }
+		if ($column) {
+			$column = strtolower($column);
+			if (!isset($this->structure['belongsTo'][$table][$column])) {
+				return null;
+			}
+			return $this->structure['belongsTo'][$table][$column];
 
-        return null;
-    }
+		} else {
+			if (!isset($this->structure['belongsTo'][$table])) {
+				return [];
+			}
+			return $this->structure['belongsTo'][$table];
+		}
+	}
 
-    public function getPrimaryKey($table)
-    {
-        $this->needStructure();
-        $table = $this->resolveFQTableName($table);
 
-        if (!isset($this->structure['primary'][$table])) {
-            return null;
-        }
+	public function rebuild()
+	{
+		$this->structure = $this->loadStructure();
+		$this->cache->save('structure', $this->structure);
+	}
 
-        return $this->structure['primary'][$table];
-    }
 
-    public function getColumns($table)
-    {
-        $this->needStructure();
-        $table = $this->resolveFQTableName($table);
+	public function isRebuilt()
+	{
+		return $this->isRebuilt;
+	}
 
-        return $this->structure['columns'][$table];
-    }
 
-    public function getHasManyReference($table, $targetTable = null)
-    {
-        $this->needStructure();
-        $table = $this->resolveFQTableName($table);
+	protected function needStructure()
+	{
+		if ($this->structure !== null) {
+			return;
+		}
 
-        if ($targetTable) {
-            $targetTable = $this->resolveFQTableName($targetTable);
-            foreach ($this->structure['hasMany'][$table] as $key => $value) {
-                if (strtolower($key) === $targetTable) {
-                    return $this->structure['hasMany'][$table][$key];
-                }
-            }
+		$this->structure = $this->cache->load('structure', [$this, 'loadStructure']);
+	}
 
-            return null;
 
-        } else {
-            if (!isset($this->structure['hasMany'][$table])) {
-                return [];
-            }
-            return $this->structure['hasMany'][$table];
-        }
-    }
+	/**
+	 * @internal
+	 */
+	public function loadStructure()
+	{
+		$driver = $this->connection->getSupplementalDriver();
 
-    public function getBelongsToReference($table, $column = null)
-    {
-        $this->needStructure();
-        $table = $this->resolveFQTableName($table);
+		$structure = [];
+		$structure['tables'] = $driver->getTables();
 
-        if ($column) {
-            $column = strtolower($column);
-            if (!isset($this->structure['belongsTo'][$table][$column])) {
-                return null;
-            }
-            return $this->structure['belongsTo'][$table][$column];
+		foreach ($structure['tables'] as $tablePair) {
+			if (isset($tablePair['fullName'])) {
+				$table = $tablePair['fullName'];
+				$structure['aliases'][strtolower($tablePair['name'])] = strtolower($table);
+			} else {
+				$table = $tablePair['name'];
+			}
 
-        } else {
-            if (!isset($this->structure['belongsTo'][$table])) {
-                return [];
-            }
-            return $this->structure['belongsTo'][$table];
-        }
-    }
+			$structure['columns'][strtolower($table)] = $columns = $driver->getColumns($table);
+
+			if (!$tablePair['view']) {
+				$structure['primary'][strtolower($table)] = $this->analyzePrimaryKey($columns);
+				$this->analyzeForeignKeys($structure, $table);
+			}
+		}
+
+		if (isset($structure['hasMany'])) {
+			foreach ($structure['hasMany'] as &$table) {
+				uksort($table, function ($a, $b) {
+					return strlen($a) - strlen($b);
+				});
+			}
+		}
+
+		$this->isRebuilt = true;
+
+		return $structure;
+	}
+
+
+	protected function analyzePrimaryKey(array $columns)
+	{
+		$primary = [];
+		foreach ($columns as $column) {
+			if ($column['primary']) {
+				$primary[] = $column['name'];
+			}
+		}
+
+		if (count($primary) === 0) {
+			return null;
+		} elseif (count($primary) === 1) {
+			return reset($primary);
+		} else {
+			return $primary;
+		}
+	}
+
+
+	protected function analyzeForeignKeys(&$structure, $table)
+	{
+		$lowerTable = strtolower($table);
+		foreach ($this->connection->getSupplementalDriver()->getForeignKeys($table) as $row) {
+			$structure['belongsTo'][$lowerTable][$row['local']] = $row['table'];
+			$structure['hasMany'][strtolower($row['table'])][$table][] = $row['local'];
+		}
+
+		if (isset($structure['belongsTo'][$lowerTable])) {
+			uksort($structure['belongsTo'][$lowerTable], function ($a, $b) {
+				return strlen($a) - strlen($b);
+			});
+		}
+	}
+
+
+	protected function resolveFQTableName($table)
+	{
+		$name = strtolower($table);
+		if (isset($this->structure['columns'][$name])) {
+			return $name;
+		}
+
+		if (isset($this->structure['aliases'][$name])) {
+			return $this->structure['aliases'][$name];
+		}
+
+		if (!$this->isRebuilt()) {
+			$this->rebuild();
+			return $this->resolveFQTableName($table);
+		}
+
+		throw new Nette\InvalidArgumentException("Table '$name' does not exist.");
+	}
 }

@@ -51,43 +51,42 @@
 <div class="row">
     <div class="col-lg-6">
         {snippet bigSnippet}
-            {snippetArea wrapper}
-                <div class="row">
-                    <div class="panel panel-default">
-                        <div class="panel-heading  {if $active == 1} green_bg {/if}"> {if $active == 1} <strong>Tracking:
-                                <span class="timer"></span> </strong>{else} Not Tracking {/if} </div>
-                        <div class="panel-body">
-                            <form n:name=selectForm>
-                                <div class="form-group">
-                                    <label n:name=first>Project</label>
-                                    <select n:name=first class="form-control"></select>
-                                </div>
-                                <div class="form-group">
-                                    {snippet secondSnippet}
-                                        <label n:name=second>Task</label>
-                                        <select n:name=second class="form-control"></select>
-                                    {/snippet}
-                                </div>
-                                <input n:name=send class="btn btn-primary">
-                            </form>
-                        </div>
+        {snippetArea wrapper}
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading  {if $active == 1} green_bg {/if}"> {if $active == 1} <strong>Tracking: <span class="timer"></span> </strong>{else} Not Tracking {/if} </div>
+                    <div class="panel-body">
+                        <form n:name=selectForm>
+                            <div class="form-group">
+                                <label n:name=first>Project</label>
+                                <select n:name=first class="form-control"></select>
+                            </div>
+                            <div class="form-group">
+                                {snippet secondSnippet}
+                                    <label n:name=second>Task</label>
+                                    <select n:name=second class="form-control"></select>
+                                {/snippet}
+                            </div>
+                            <input n:name=send class="btn btn-primary">
+                        </form>
                     </div>
                 </div>
+            </div>
 
 
-                <script type="text/javascript">
-                    $(document).ready(function () {
-                        $('.timer').countimer({
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $('.timer').countimer({
 
-                            initHours: {$h},
-                            initMinutes: {$m},
-                            initSeconds: {$s},
-                            autoStart: true
-                        });
+                        initHours: {$h},
+                        initMinutes: {$m},
+                        initSeconds: {$s},
+                        autoStart: true
                     });
-                </script>
+                });
+            </script>
 
-            {/snippetArea}
+        {/snippetArea}
             {include jsCallback, input => first, link => firstChange}
         {/snippet}
 

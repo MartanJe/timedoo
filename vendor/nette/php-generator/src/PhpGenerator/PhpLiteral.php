@@ -13,24 +13,24 @@ namespace Nette\PhpGenerator;
  */
 class PhpLiteral
 {
-    /** @var string */
-    private $value;
+	/** @var string */
+	private $value;
 
 
-    /**
-     * @param  string
-     */
-    public function __construct($value)
-    {
-        $this->value = (string)$value;
-    }
+	/**
+	 * @param  string
+	 */
+	public function __construct($value)
+	{
+		$this->value = (string) $value;
+	}
 
 
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->value;
-    }
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->value;
+	}
 }

@@ -3,6 +3,9 @@
 namespace App\TrackModule\Model;
 
 use App\Model\AbstractManager;
+use Nette\Database\Table\IRow;
+use Nette\Database\Table\Selection;
+use Nette\Utils\ArrayHash;
 
 
 class ProjectManager extends AbstractManager
@@ -12,12 +15,15 @@ class ProjectManager extends AbstractManager
     {
         $project = $this->m_database->table('project')->get($idProject);
         $projectData = $project->toArray();
-        $active = $projectData['active'];
+        $active =  $projectData['active'];
 
-        if ($active) {
+        if($active)
+        {
             $sql = "UPDATE `project` SET `active`=0 WHERE (`id_project` = ?)";
             $this->m_database->query($sql, $idProject);
-        } else {
+        }
+        else
+        {
             $sql = "UPDATE `project` SET `active`=1 WHERE (`id_project` = ?)";
             $this->m_database->query($sql, $idProject);
         }
@@ -71,9 +77,10 @@ class ProjectManager extends AbstractManager
                           
                 WHERE contribute.id_user = ? AND contribute.id_project = project.id_project 
                 AND ( t2.id_project = project.id_project  OR  NOT EXISTS ( SELECT * FROM task where id_project = t2.id_project) )and (project.active = 1 OR project.active = ?)  ";
-        $projects = $this->m_database->query($sql, $idUser, $active);
+        $projects = $this->m_database->query($sql,$idUser,  $active);
         return $projects;
     }
+
 
 
     public function getUserProjectsForStats($idUser, $onlyActive)
@@ -92,9 +99,16 @@ class ProjectManager extends AbstractManager
                           
                 WHERE contribute.id_user = ? AND contribute.id_project = project.id_project 
                 AND ( t2.id_project = project.id_project  OR  NOT EXISTS ( SELECT * FROM task where id_project = t2.id_project) )and (project.active = 1 OR project.active = ?)  ";
-        $projects = $this->m_database->query($sql, $idUser, $onlyActive);
+        $projects = $this->m_database->query($sql,$idUser,  $onlyActive);
         return $projects;
     }
+
+
+
+
+
+
+
 
 
     /**
@@ -105,11 +119,13 @@ class ProjectManager extends AbstractManager
      */
     public function getRole($idUser, $idProject)
     {
-        // $sql ="SELECT  id_role, description FROM role WHERE id_role = (SELECT  DISTINCT contribute.id_role FROM contribute WHERE contribute.id_user = ? AND contribute.id_project = ?)";
+       // $sql ="SELECT  id_role, description FROM role WHERE id_role = (SELECT  DISTINCT contribute.id_role FROM contribute WHERE contribute.id_user = ? AND contribute.id_project = ?)";
         //$role = $this->m_database->query($sql, $idUser, $idProject);
         //return $role;
         return $this->m_database->table('contribute')->where('id_user', $idUser)->where('id_project', $idProject)->fetch();
     }
+
+
 
 
     public function getProject($projectID)
@@ -122,6 +138,7 @@ class ProjectManager extends AbstractManager
         $sql = "INSERT INTO contribute (id_user, id_project, id_role) VALUES (?, ?, '1')";
         $this->m_database->query($sql, $userID, $projectID, 2);
     }
+
 
 
     public function removeUser($userID, $projectID)
@@ -138,17 +155,19 @@ class ProjectManager extends AbstractManager
         $projectID = $project['id_project'];
         $contribute = $this->m_database->table('contribute')->where('id_user', $userID)->where('id_project', $projectID)->fetch();
         $sql = "UPDATE contribute SET id_role = ? WHERE id_user = ? AND id_project = ?";
-        if ($contribute['id_role'] == 1) {
+        if($contribute['id_role'] == 1)
+        {
             $this->m_database->query($sql, 2, $userID, $projectID);
-        } else {
+        }
+        else
+        {
             $this->m_database->query($sql, 1, $userID, $projectID);
         }
     }
 
     public function getMembers($idProject)
     {
-        $sql = "SELECT   contribute.id_user, (SELECT username from user where user.id_user = contribute.id_user) as username,  id_role FROM contribute  WHERE contribute.id_project = ?";
-        $sql2 = "";
+        $sql ="SELECT   contribute.id_user, (SELECT username from user where user.id_user = contribute.id_user) as username,  id_role FROM contribute  WHERE contribute.id_project = ?";
         $members = $this->m_database->query($sql, $idProject);
         return $members;
 
@@ -161,7 +180,7 @@ class ProjectManager extends AbstractManager
 
     public function createProject($projectName, $client, $description, $userID)
     {
-        // create project
+         // create project
         $sql = "INSERT INTO project (project_name, active, client, description ) VALUES  ( ?,?,?,?)";
         $this->m_database->query($sql, $projectName, 1, $client, $description);
 
@@ -178,7 +197,7 @@ class ProjectManager extends AbstractManager
     public function updateProject($projectID, $projectName, $client, $description)
     {
         $sql = "UPDATE project SET project_name = ? , client = ? , description = ? WHERE id_project = ?";
-        $this->m_database->query($sql, $projectName, $client, $description, $projectID);
+        $this->m_database->query($sql,  $projectName, $client, $description, $projectID);
     }
 
     public function getContribute($getId, $idProject)

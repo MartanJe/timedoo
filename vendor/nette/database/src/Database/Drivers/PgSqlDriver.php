@@ -15,131 +15,130 @@ use Nette;
  */
 class PgSqlDriver implements Nette\Database\ISupplementalDriver
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    /** @var Nette\Database\Connection */
-    private $connection;
-
-
-    public function __construct(Nette\Database\Connection $connection, array $options)
-    {
-        $this->connection = $connection;
-    }
+	/** @var Nette\Database\Connection */
+	private $connection;
 
 
-    public function convertException(\PDOException $e)
-    {
-        $code = isset($e->errorInfo[0]) ? $e->errorInfo[0] : null;
-        if ($code === '0A000' && strpos($e->getMessage(), 'truncate') !== false) {
-            return Nette\Database\ForeignKeyConstraintViolationException::from($e);
-
-        } elseif ($code === '23502') {
-            return Nette\Database\NotNullConstraintViolationException::from($e);
-
-        } elseif ($code === '23503') {
-            return Nette\Database\ForeignKeyConstraintViolationException::from($e);
-
-        } elseif ($code === '23505') {
-            return Nette\Database\UniqueConstraintViolationException::from($e);
-
-        } elseif ($code === '08006') {
-            return Nette\Database\ConnectionException::from($e);
-
-        } else {
-            return Nette\Database\DriverException::from($e);
-        }
-    }
+	public function __construct(Nette\Database\Connection $connection, array $options)
+	{
+		$this->connection = $connection;
+	}
 
 
-    /********************* SQL ****************d*g**/
+	public function convertException(\PDOException $e)
+	{
+		$code = isset($e->errorInfo[0]) ? $e->errorInfo[0] : null;
+		if ($code === '0A000' && strpos($e->getMessage(), 'truncate') !== false) {
+			return Nette\Database\ForeignKeyConstraintViolationException::from($e);
+
+		} elseif ($code === '23502') {
+			return Nette\Database\NotNullConstraintViolationException::from($e);
+
+		} elseif ($code === '23503') {
+			return Nette\Database\ForeignKeyConstraintViolationException::from($e);
+
+		} elseif ($code === '23505') {
+			return Nette\Database\UniqueConstraintViolationException::from($e);
+
+		} elseif ($code === '08006') {
+			return Nette\Database\ConnectionException::from($e);
+
+		} else {
+			return Nette\Database\DriverException::from($e);
+		}
+	}
 
 
-    /**
-     * Delimites identifier for use in a SQL statement.
-     */
-    public function delimite($name)
-    {
-        // @see http://www.postgresql.org/docs/8.2/static/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
-        return '"' . str_replace('"', '""', $name) . '"';
-    }
+	/********************* SQL ****************d*g**/
 
 
-    /**
-     * Formats boolean for use in a SQL statement.
-     */
-    public function formatBool($value)
-    {
-        return $value ? 'TRUE' : 'FALSE';
-    }
+	/**
+	 * Delimites identifier for use in a SQL statement.
+	 */
+	public function delimite($name)
+	{
+		// @see http://www.postgresql.org/docs/8.2/static/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+		return '"' . str_replace('"', '""', $name) . '"';
+	}
 
 
-    /**
-     * Formats date-time for use in a SQL statement.
-     */
-    public function formatDateTime(/*\DateTimeInterface*/
-        $value)
-    {
-        return $value->format("'Y-m-d H:i:s'");
-    }
+	/**
+	 * Formats boolean for use in a SQL statement.
+	 */
+	public function formatBool($value)
+	{
+		return $value ? 'TRUE' : 'FALSE';
+	}
 
 
-    /**
-     * Formats date-time interval for use in a SQL statement.
-     */
-    public function formatDateInterval(\DateInterval $value)
-    {
-        throw new Nette\NotSupportedException;
-    }
+	/**
+	 * Formats date-time for use in a SQL statement.
+	 */
+	public function formatDateTime(/*\DateTimeInterface*/ $value)
+	{
+		return $value->format("'Y-m-d H:i:s'");
+	}
 
 
-    /**
-     * Encodes string for use in a LIKE statement.
-     */
-    public function formatLike($value, $pos)
-    {
-        $bs = substr($this->connection->quote('\\'), 1, -1); // standard_conforming_strings = on/off
-        $value = substr($this->connection->quote($value), 1, -1);
-        $value = strtr($value, ['%' => $bs . '%', '_' => $bs . '_', '\\' => '\\\\']);
-        return ($pos <= 0 ? "'%" : "'") . $value . ($pos >= 0 ? "%'" : "'");
-    }
+	/**
+	 * Formats date-time interval for use in a SQL statement.
+	 */
+	public function formatDateInterval(\DateInterval $value)
+	{
+		throw new Nette\NotSupportedException;
+	}
 
 
-    /**
-     * Injects LIMIT/OFFSET to the SQL query.
-     */
-    public function applyLimit(&$sql, $limit, $offset)
-    {
-        if ($limit < 0 || $offset < 0) {
-            throw new Nette\InvalidArgumentException('Negative offset or limit.');
-        }
-        if ($limit !== null) {
-            $sql .= ' LIMIT ' . (int)$limit;
-        }
-        if ($offset) {
-            $sql .= ' OFFSET ' . (int)$offset;
-        }
-    }
+	/**
+	 * Encodes string for use in a LIKE statement.
+	 */
+	public function formatLike($value, $pos)
+	{
+		$bs = substr($this->connection->quote('\\'), 1, -1); // standard_conforming_strings = on/off
+		$value = substr($this->connection->quote($value), 1, -1);
+		$value = strtr($value, ['%' => $bs . '%', '_' => $bs . '_', '\\' => '\\\\']);
+		return ($pos <= 0 ? "'%" : "'") . $value . ($pos >= 0 ? "%'" : "'");
+	}
 
 
-    /**
-     * Normalizes result row.
-     */
-    public function normalizeRow($row)
-    {
-        return $row;
-    }
+	/**
+	 * Injects LIMIT/OFFSET to the SQL query.
+	 */
+	public function applyLimit(&$sql, $limit, $offset)
+	{
+		if ($limit < 0 || $offset < 0) {
+			throw new Nette\InvalidArgumentException('Negative offset or limit.');
+		}
+		if ($limit !== null) {
+			$sql .= ' LIMIT ' . (int) $limit;
+		}
+		if ($offset) {
+			$sql .= ' OFFSET ' . (int) $offset;
+		}
+	}
 
 
-    /********************* reflection ****************d*g**/
+	/**
+	 * Normalizes result row.
+	 */
+	public function normalizeRow($row)
+	{
+		return $row;
+	}
 
 
-    /**
-     * Returns list of tables.
-     */
-    public function getTables()
-    {
-        $tables = [];
-        foreach ($this->connection->query("
+	/********************* reflection ****************d*g**/
+
+
+	/**
+	 * Returns list of tables.
+	 */
+	public function getTables()
+	{
+		$tables = [];
+		foreach ($this->connection->query("
 			SELECT DISTINCT ON (c.relname)
 				c.relname::varchar AS name,
 				c.relkind IN ('v', 'm') AS view,
@@ -153,20 +152,20 @@ class PgSqlDriver implements Nette\Database\ISupplementalDriver
 			ORDER BY
 				c.relname
 		") as $row) {
-            $tables[] = (array)$row;
-        }
+			$tables[] = (array) $row;
+		}
 
-        return $tables;
-    }
+		return $tables;
+	}
 
 
-    /**
-     * Returns metadata for all columns in a table.
-     */
-    public function getColumns($table)
-    {
-        $columns = [];
-        foreach ($this->connection->query("
+	/**
+	 * Returns metadata for all columns in a table.
+	 */
+	public function getColumns($table)
+	{
+		$columns = [];
+		foreach ($this->connection->query("
 			SELECT
 				a.attname::varchar AS name,
 				c.relname::varchar AS table,
@@ -192,33 +191,24 @@ class PgSqlDriver implements Nette\Database\ISupplementalDriver
 			ORDER BY
 				a.attnum
 		") as $row) {
-            $column = (array)$row;
-            $column['vendor'] = $column;
-            unset($column['sequence']);
+			$column = (array) $row;
+			$column['vendor'] = $column;
+			unset($column['sequence']);
 
-            $columns[] = $column;
-        }
+			$columns[] = $column;
+		}
 
-        return $columns;
-    }
+		return $columns;
+	}
 
-    /**
-     * Converts: schema.name => "schema"."name"
-     * @param  string
-     * @return string
-     */
-    private function delimiteFQN($name)
-    {
-        return implode('.', array_map([$this, 'delimite'], explode('.', $name)));
-    }
 
-    /**
-     * Returns metadata for all indexes in a table.
-     */
-    public function getIndexes($table)
-    {
-        $indexes = [];
-        foreach ($this->connection->query("
+	/**
+	 * Returns metadata for all indexes in a table.
+	 */
+	public function getIndexes($table)
+	{
+		$indexes = [];
+		foreach ($this->connection->query("
 			SELECT
 				c2.relname::varchar AS name,
 				i.indisunique AS unique,
@@ -233,22 +223,23 @@ class PgSqlDriver implements Nette\Database\ISupplementalDriver
 				c1.relkind = 'r'
 				AND c1.oid = {$this->connection->quote($this->delimiteFQN($table))}::regclass
 		") as $row) {
-            $indexes[$row['name']]['name'] = $row['name'];
-            $indexes[$row['name']]['unique'] = $row['unique'];
-            $indexes[$row['name']]['primary'] = $row['primary'];
-            $indexes[$row['name']]['columns'][] = $row['column'];
-        }
+			$indexes[$row['name']]['name'] = $row['name'];
+			$indexes[$row['name']]['unique'] = $row['unique'];
+			$indexes[$row['name']]['primary'] = $row['primary'];
+			$indexes[$row['name']]['columns'][] = $row['column'];
+		}
 
-        return array_values($indexes);
-    }
+		return array_values($indexes);
+	}
 
-    /**
-     * Returns metadata for all foreign keys in a table.
-     */
-    public function getForeignKeys($table)
-    {
-        /* Does't work with multicolumn foreign keys */
-        return $this->connection->query("
+
+	/**
+	 * Returns metadata for all foreign keys in a table.
+	 */
+	public function getForeignKeys($table)
+	{
+		/* Does't work with multicolumn foreign keys */
+		return $this->connection->query("
 			SELECT
 				co.conname::varchar AS name,
 				al.attname::varchar AS local,
@@ -266,22 +257,35 @@ class PgSqlDriver implements Nette\Database\ISupplementalDriver
 				AND cl.oid = {$this->connection->quote($this->delimiteFQN($table))}::regclass
 				AND nf.nspname = ANY (pg_catalog.current_schemas(FALSE))
 		")->fetchAll();
-    }
+	}
 
-    /**
-     * Returns associative array of detected types (IReflection::FIELD_*) in result set.
-     */
-    public function getColumnTypes(\PDOStatement $statement)
-    {
-        return Nette\Database\Helpers::detectTypes($statement);
-    }
 
-    /**
-     * @param  string
-     * @return bool
-     */
-    public function isSupported($item)
-    {
-        return $item === self::SUPPORT_SEQUENCE || $item === self::SUPPORT_SUBSELECT || $item === self::SUPPORT_SCHEMA;
-    }
+	/**
+	 * Returns associative array of detected types (IReflection::FIELD_*) in result set.
+	 */
+	public function getColumnTypes(\PDOStatement $statement)
+	{
+		return Nette\Database\Helpers::detectTypes($statement);
+	}
+
+
+	/**
+	 * @param  string
+	 * @return bool
+	 */
+	public function isSupported($item)
+	{
+		return $item === self::SUPPORT_SEQUENCE || $item === self::SUPPORT_SUBSELECT || $item === self::SUPPORT_SCHEMA;
+	}
+
+
+	/**
+	 * Converts: schema.name => "schema"."name"
+	 * @param  string
+	 * @return string
+	 */
+	private function delimiteFQN($name)
+	{
+		return implode('.', array_map([$this, 'delimite'], explode('.', $name)));
+	}
 }

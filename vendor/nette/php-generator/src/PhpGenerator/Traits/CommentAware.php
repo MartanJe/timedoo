@@ -13,55 +13,61 @@ namespace Nette\PhpGenerator\Traits;
  */
 trait CommentAware
 {
-    /** @var string|null */
-    private $comment;
+	/** @var string|null */
+	private $comment;
 
-    /**
-     * @return string|null
-     */
-    public function getComment()
-    {
-        return $this->comment;
-    }
 
-    /**
-     * @param  string|null
-     * @return static
-     */
-    public function setComment($val)
-    {
-        $this->comment = $val ? (string)$val : null;
-        return $this;
-    }
+	/**
+	 * @param  string|null
+	 * @return static
+	 */
+	public function setComment($val)
+	{
+		$this->comment = $val ? (string) $val : null;
+		return $this;
+	}
 
-    /** @deprecated */
-    public function setDocuments(array $s)
-    {
-        trigger_error(__METHOD__ . '() is deprecated, use similar setComment()', E_USER_DEPRECATED);
-        return $this->setComment(implode("\n", $s));
-    }
 
-    /** @deprecated */
-    public function getDocuments()
-    {
-        trigger_error(__METHOD__ . '() is deprecated, use similar getComment()', E_USER_DEPRECATED);
-        return $this->comment ? [$this->comment] : [];
-    }
+	/**
+	 * @return string|null
+	 */
+	public function getComment()
+	{
+		return $this->comment;
+	}
 
-    /** @deprecated */
-    public function addDocument($s)
-    {
-        trigger_error(__METHOD__ . '() is deprecated, use addComment()', E_USER_DEPRECATED);
-        return $this->addComment($s);
-    }
 
-    /**
-     * @param  string
-     * @return static
-     */
-    public function addComment($val)
-    {
-        $this->comment .= $this->comment ? "\n$val" : $val;
-        return $this;
-    }
+	/**
+	 * @param  string
+	 * @return static
+	 */
+	public function addComment($val)
+	{
+		$this->comment .= $this->comment ? "\n$val" : $val;
+		return $this;
+	}
+
+
+	/** @deprecated */
+	public function setDocuments(array $s)
+	{
+		trigger_error(__METHOD__ . '() is deprecated, use similar setComment()', E_USER_DEPRECATED);
+		return $this->setComment(implode("\n", $s));
+	}
+
+
+	/** @deprecated */
+	public function getDocuments()
+	{
+		trigger_error(__METHOD__ . '() is deprecated, use similar getComment()', E_USER_DEPRECATED);
+		return $this->comment ? [$this->comment] : [];
+	}
+
+
+	/** @deprecated */
+	public function addDocument($s)
+	{
+		trigger_error(__METHOD__ . '() is deprecated, use addComment()', E_USER_DEPRECATED);
+		return $this->addComment($s);
+	}
 }

@@ -16,13 +16,13 @@ use Nette;
  */
 class Loader extends Latte\Loaders\FileLoader
 {
-    /** @var Nette\Application\UI\Presenter */
-    private $presenter;
+	/** @var Nette\Application\UI\Presenter */
+	private $presenter;
 
 
-    public function __construct(Nette\Application\UI\Presenter $presenter)
-    {
-        parent::__construct();
-        $this->presenter = $presenter;
-    }
+	public function __construct(Nette\Application\UI\Presenter $presenter)
+	{
+		parent::__construct();
+		$this->presenter = $presenter;
+	}
 }

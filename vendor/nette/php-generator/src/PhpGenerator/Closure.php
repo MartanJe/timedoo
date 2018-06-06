@@ -17,67 +17,70 @@ use Nette;
  */
 class Closure
 {
-    use Nette\SmartObject;
-    use Traits\FunctionLike;
+	use Nette\SmartObject;
+	use Traits\FunctionLike;
 
-    /** @var Parameter[] */
-    private $uses = [];
-
-
-    /**
-     * @return static
-     */
-    public static function from(\Closure $closure)
-    {
-        return (new Factory)->fromFunctionReflection(new \ReflectionFunction($closure));
-    }
+	/** @var Parameter[] */
+	private $uses = [];
 
 
-    /**
-     * @return string  PHP code
-     */
-    public function __toString()
-    {
-        $uses = [];
-        foreach ($this->uses as $param) {
-            $uses[] = ($param->isReference() ? '&' : '') . '$' . $param->getName();
-        }
-        return 'function '
-            . ($this->returnReference ? '&' : '')
-            . $this->parametersToString()
-            . ($this->uses ? ' use (' . implode(', ', $uses) . ')' : '')
-            . $this->returnTypeToString()
-            . " {\n" . Nette\Utils\Strings::indent(ltrim(rtrim($this->body) . "\n"), 1) . '}';
-    }
+	/**
+	 * @return static
+	 */
+	public static function from(\Closure $closure)
+	{
+		return (new Factory)->fromFunctionReflection(new \ReflectionFunction($closure));
+	}
 
-    /**
-     * @return array
-     */
-    public function getUses()
-    {
-        return $this->uses;
-    }
 
-    /**
-     * @param  Parameter []
-     * @return static
-     */
-    public function setUses(array $uses)
-    {
-        foreach ($uses as $use) {
-            if (!$use instanceof Parameter) {
-                throw new Nette\InvalidArgumentException('Argument must be Nette\PhpGenerator\Parameter[].');
-            }
-        }
-        $this->uses = $uses;
-        return $this;
-    }
+	/**
+	 * @return string  PHP code
+	 */
+	public function __toString()
+	{
+		$uses = [];
+		foreach ($this->uses as $param) {
+			$uses[] = ($param->isReference() ? '&' : '') . '$' . $param->getName();
+		}
+		return 'function '
+			. ($this->returnReference ? '&' : '')
+			. $this->parametersToString()
+			. ($this->uses ? ' use (' . implode(', ', $uses) . ')' : '')
+			. $this->returnTypeToString()
+			. " {\n" . Nette\Utils\Strings::indent(ltrim(rtrim($this->body) . "\n"), 1) . '}';
+	}
 
-    /**
-     * @return Parameter
-     */
-    public function addUse($name)
-    {
-        return $this->uses[] = new Parameter($name);
-    }
+
+	/**
+	 * @param  Parameter[]
+	 * @return static
+	 */
+	public function setUses(array $uses)
+	{
+		foreach ($uses as $use) {
+			if (!$use instanceof Parameter) {
+				throw new Nette\InvalidArgumentException('Argument must be Nette\PhpGenerator\Parameter[].');
+			}
+		}
+		$this->uses = $uses;
+		return $this;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getUses()
+	{
+		return $this->uses;
+	}
+
+
+	/**
+	 * @return Parameter
+	 */
+	public function addUse($name)
+	{
+		return $this->uses[] = new Parameter($name);
+	}
 }

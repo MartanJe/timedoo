@@ -15,33 +15,33 @@ use Nette;
  */
 class MailExtension extends Nette\DI\CompilerExtension
 {
-    public $defaults = [
-        'smtp' => false,
-        'host' => null,
-        'port' => null,
-        'username' => null,
-        'password' => null,
-        'secure' => null,
-        'timeout' => null,
-    ];
+	public $defaults = [
+		'smtp' => false,
+		'host' => null,
+		'port' => null,
+		'username' => null,
+		'password' => null,
+		'secure' => null,
+		'timeout' => null,
+	];
 
 
-    public function loadConfiguration()
-    {
-        $builder = $this->getContainerBuilder();
-        $config = $this->validateConfig($this->defaults);
+	public function loadConfiguration()
+	{
+		$builder = $this->getContainerBuilder();
+		$config = $this->validateConfig($this->defaults);
 
-        $mailer = $builder->addDefinition($this->prefix('mailer'))
-            ->setClass(Nette\Mail\IMailer::class);
+		$mailer = $builder->addDefinition($this->prefix('mailer'))
+			->setClass(Nette\Mail\IMailer::class);
 
-        if (empty($config['smtp'])) {
-            $mailer->setFactory(Nette\Mail\SendmailMailer::class);
-        } else {
-            $mailer->setFactory(Nette\Mail\SmtpMailer::class, [$config]);
-        }
+		if (empty($config['smtp'])) {
+			$mailer->setFactory(Nette\Mail\SendmailMailer::class);
+		} else {
+			$mailer->setFactory(Nette\Mail\SmtpMailer::class, [$config]);
+		}
 
-        if ($this->name === 'mail') {
-            $builder->addAlias('nette.mailer', $this->prefix('mailer'));
-        }
-    }
+		if ($this->name === 'mail') {
+			$builder->addAlias('nette.mailer', $this->prefix('mailer'));
+		}
+	}
 }

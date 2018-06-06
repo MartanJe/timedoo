@@ -15,39 +15,39 @@ use Nette;
  */
 class SendmailMailer implements IMailer
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    /** @var string|null */
-    public $commandArgs;
+	/** @var string|null */
+	public $commandArgs;
 
 
-    /**
-     * Sends email.
-     * @return void
-     * @throws SendException
-     */
-    public function send(Message $mail)
-    {
-        $tmp = clone $mail;
-        $tmp->setHeader('Subject', null);
-        $tmp->setHeader('To', null);
+	/**
+	 * Sends email.
+	 * @return void
+	 * @throws SendException
+	 */
+	public function send(Message $mail)
+	{
+		$tmp = clone $mail;
+		$tmp->setHeader('Subject', null);
+		$tmp->setHeader('To', null);
 
-        $parts = explode(Message::EOL . Message::EOL, $tmp->generateMessage(), 2);
+		$parts = explode(Message::EOL . Message::EOL, $tmp->generateMessage(), 2);
 
-        $args = [
-            str_replace(Message::EOL, PHP_EOL, $mail->getEncodedHeader('To')),
-            str_replace(Message::EOL, PHP_EOL, $mail->getEncodedHeader('Subject')),
-            str_replace(Message::EOL, PHP_EOL, $parts[1]),
-            str_replace(Message::EOL, PHP_EOL, $parts[0]),
-        ];
-        if ($this->commandArgs) {
-            $args[] = (string)$this->commandArgs;
-        }
-        $res = Nette\Utils\Callback::invokeSafe('mail', $args, function ($message) use (&$info) {
-            $info = ": $message";
-        });
-        if ($res === false) {
-            throw new SendException("Unable to send email$info.");
-        }
-    }
+		$args = [
+			str_replace(Message::EOL, PHP_EOL, $mail->getEncodedHeader('To')),
+			str_replace(Message::EOL, PHP_EOL, $mail->getEncodedHeader('Subject')),
+			str_replace(Message::EOL, PHP_EOL, $parts[1]),
+			str_replace(Message::EOL, PHP_EOL, $parts[0]),
+		];
+		if ($this->commandArgs) {
+			$args[] = (string) $this->commandArgs;
+		}
+		$res = Nette\Utils\Callback::invokeSafe('mail', $args, function ($message) use (&$info) {
+			$info = ": $message";
+		});
+		if ($res === false) {
+			throw new SendException("Unable to send email$info.");
+		}
+	}
 }

@@ -16,50 +16,50 @@ use Nette;
 class Button extends BaseControl
 {
 
-    /**
-     * @param  string|object
-     */
-    public function __construct($caption = null)
-    {
-        parent::__construct($caption);
-        $this->control->type = 'button';
-        $this->setOption('type', 'button');
-    }
+	/**
+	 * @param  string|object
+	 */
+	public function __construct($caption = null)
+	{
+		parent::__construct($caption);
+		$this->control->type = 'button';
+		$this->setOption('type', 'button');
+	}
 
 
-    /**
-     * Is button pressed?
-     * @return bool
-     */
-    public function isFilled()
-    {
-        $value = $this->getValue();
-        return $value !== null && $value !== [];
-    }
+	/**
+	 * Is button pressed?
+	 * @return bool
+	 */
+	public function isFilled()
+	{
+		$value = $this->getValue();
+		return $value !== null && $value !== [];
+	}
 
 
-    /**
-     * Bypasses label generation.
-     * @return void
-     */
-    public function getLabel($caption = null)
-    {
-    }
+	/**
+	 * Bypasses label generation.
+	 * @return void
+	 */
+	public function getLabel($caption = null)
+	{
+	}
 
 
-    /**
-     * Generates control's HTML element.
-     * @param  string|object
-     * @return Nette\Utils\Html
-     */
-    public function getControl($caption = null)
-    {
-        $this->setOption('rendered', true);
-        $el = clone $this->control;
-        return $el->addAttributes([
-            'name' => $this->getHtmlName(),
-            'disabled' => $this->isDisabled(),
-            'value' => $this->translate($caption === null ? $this->caption : $caption),
-        ]);
-    }
+	/**
+	 * Generates control's HTML element.
+	 * @param  string|object
+	 * @return Nette\Utils\Html
+	 */
+	public function getControl($caption = null)
+	{
+		$this->setOption('rendered', true);
+		$el = clone $this->control;
+		return $el->addAttributes([
+			'name' => $this->getHtmlName(),
+			'disabled' => $this->isDisabled(),
+			'value' => $this->translate($caption === null ? $this->caption : $caption),
+		]);
+	}
 }

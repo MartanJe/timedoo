@@ -2,8 +2,8 @@
 
 namespace App\Model;
 
-use Nette\Database\Context;
 use Nette\Object;
+use Nette\Database\Context;
 
 /**
  * Abstract class used for database connection

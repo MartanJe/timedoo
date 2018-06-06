@@ -14,15 +14,15 @@ namespace Tracy;
 interface IBarPanel
 {
 
-    /**
-     * Renders HTML code for custom tab.
-     * @return string
-     */
-    function getTab();
+	/**
+	 * Renders HTML code for custom tab.
+	 * @return string
+	 */
+	function getTab();
 
-    /**
-     * Renders HTML code for custom panel.
-     * @return string
-     */
-    function getPanel();
+	/**
+	 * Renders HTML code for custom panel.
+	 * @return string
+	 */
+	function getPanel();
 }

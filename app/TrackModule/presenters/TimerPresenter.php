@@ -2,9 +2,9 @@
 
 namespace App\TrackModule\Presenters;
 
-use App\Presenters\BasePresenter;
 use App\TrackModule\Model\ProjectManager;
 use App\TrackModule\Model\TaskManager;
+use App\Presenters\BasePresenter;
 use Nette\Application\UI\Form;
 
 class TimerPresenter extends BasePresenter
@@ -65,7 +65,8 @@ class TimerPresenter extends BasePresenter
     public function processSelectForm(Form $form)
     {
         // TO SE MUSI DOMYSLET
-        if ($this->m_taskManager->isTracking($this->user->getId())) {
+        if ($this->m_taskManager->isTracking($this->user->getId()))
+        {
             $this->m_taskManager->stopActivity($this->user->getId());
 
             $this['selectForm']['first']->setItems($this->getFirst())->setValue(0)->setDisabled(FALSE);
@@ -80,15 +81,20 @@ class TimerPresenter extends BasePresenter
         $project = $values['first'];
         $task = $values['second'];
 
-        if (!$project) {
+        if (!$project)
+        {
             $this['selectForm']['first']->setItems($this->getFirst())->setValue(0);
             $this->flashMessage("Project not selected");
             return $this->redrawTimer();
-        } else if (!$task) {
+        }
+        else if (!$task)
+        {
             $this['selectForm']['first']->setItems($this->getFirst())->setValue(0);
             $this->flashMessage("Task not selected");
             return $this->redrawTimer();
-        } else {
+        }
+        else
+        {
             $this->m_taskManager->startActivity($this->user->getId(), $task);
             $data = $this->m_taskManager->getTrackingData($this->user->getId());
             $this['selectForm']['first']->setItems([])->setPrompt($data['project_name']);
@@ -99,25 +105,6 @@ class TimerPresenter extends BasePresenter
             $this->flashMessage("Tracking started... ");
             return $this->redrawTimer();
         }
-    }
-
-    /*************************   ******************************************************************************************/
-    protected function getFirst()
-    {
-        $projects = $this->m_projectManager->getUserProjects($this->user->getId(), 1);
-        $firstItems = array(0 => 'Select');
-        foreach ($projects as $project) {
-            $firstItems[] = array($project->id_project => "$project->project_name");
-        }
-        return $firstItems;
-    }
-
-    private function redrawTimer()
-    {
-        $this->redrawControl('timerMenu');
-        $this->redrawControl('bigSnippet');
-        $this->redrawControl('messages');
-
     }
 
     protected function createComponentSelectForm()
@@ -140,5 +127,24 @@ class TimerPresenter extends BasePresenter
 
         }
         return $form;
+    }
+
+    /*************************   ******************************************************************************************/
+    protected function getFirst()
+    {
+        $projects = $this->m_projectManager->getUserProjects($this->user->getId(), 1);
+        $firstItems = array(0 => 'Select');
+        foreach ($projects as $project) {
+            $firstItems[] = array($project->id_project => "$project->project_name");
+        }
+        return $firstItems;
+    }
+
+    private function redrawTimer()
+    {
+        $this->redrawControl('timerMenu');
+        $this->redrawControl('bigSnippet');
+        $this->redrawControl('messages');
+
     }
 }

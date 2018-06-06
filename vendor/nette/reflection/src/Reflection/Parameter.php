@@ -26,63 +26,65 @@ use Nette;
  */
 class Parameter extends \ReflectionParameter
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    /** @var mixed */
-    private $function;
-
-
-    public function __construct($function, $parameter)
-    {
-        parent::__construct($this->function = $function, $parameter);
-    }
+	/** @var mixed */
+	private $function;
 
 
-    /**
-     * @return ClassType
-     */
-    public function getClass()
-    {
-        return ($ref = parent::getClass()) ? new ClassType($ref->getName()) : null;
-    }
+	public function __construct($function, $parameter)
+	{
+		parent::__construct($this->function = $function, $parameter);
+	}
 
 
-    /**
-     * @return string
-     */
-    public function getClassName()
-    {
-        try {
-            return ($ref = parent::getClass()) ? $ref->getName() : null;
-        } catch (\ReflectionException $e) {
-            if (preg_match('#Class (.+) does not exist#', $e->getMessage(), $m)) {
-                return $m[1];
-            }
-            throw $e;
-        }
-    }
+	/**
+	 * @return ClassType
+	 */
+	public function getClass()
+	{
+		return ($ref = parent::getClass()) ? new ClassType($ref->getName()) : null;
+	}
 
 
-    /**
-     * @return ClassType
-     */
-    public function getDeclaringClass()
-    {
-        return ($ref = parent::getDeclaringClass()) ? new ClassType($ref->getName()) : null;
-    }
+	/**
+	 * @return string
+	 */
+	public function getClassName()
+	{
+		try {
+			return ($ref = parent::getClass()) ? $ref->getName() : null;
+		} catch (\ReflectionException $e) {
+			if (preg_match('#Class (.+) does not exist#', $e->getMessage(), $m)) {
+				return $m[1];
+			}
+			throw $e;
+		}
+	}
 
-    public function __toString()
-    {
-        return '$' . parent::getName() . ' in ' . $this->getDeclaringFunction();
-    }
 
-    /**
-     * @return Method|GlobalFunction
-     */
-    public function getDeclaringFunction()
-    {
-        return is_array($this->function)
-            ? new Method($this->function[0], $this->function[1])
-            : new GlobalFunction($this->function);
-    }
+	/**
+	 * @return ClassType
+	 */
+	public function getDeclaringClass()
+	{
+		return ($ref = parent::getDeclaringClass()) ? new ClassType($ref->getName()) : null;
+	}
+
+
+	/**
+	 * @return Method|GlobalFunction
+	 */
+	public function getDeclaringFunction()
+	{
+		return is_array($this->function)
+			? new Method($this->function[0], $this->function[1])
+			: new GlobalFunction($this->function);
+	}
+
+
+	public function __toString()
+	{
+		return '$' . parent::getName() . ' in ' . $this->getDeclaringFunction();
+	}
 }

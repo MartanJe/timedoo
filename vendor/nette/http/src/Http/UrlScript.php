@@ -26,52 +26,56 @@ namespace Nette\Http;
  */
 class UrlScript extends Url
 {
-    /** @var string */
-    private $scriptPath;
+	/** @var string */
+	private $scriptPath;
 
 
-    public function __construct($url = null, $scriptPath = '')
-    {
-        parent::__construct($url);
-        $this->setScriptPath($scriptPath);
-    }
+	public function __construct($url = null, $scriptPath = '')
+	{
+		parent::__construct($url);
+		$this->setScriptPath($scriptPath);
+	}
 
-    /**
-     * Returns the base-path.
-     * @return string
-     */
-    public function getBasePath()
-    {
-        $pos = strrpos($this->getScriptPath(), '/');
-        return $pos === false ? '' : substr($this->getPath(), 0, $pos + 1);
-    }
 
-    /**
-     * Returns the script-path part of URI.
-     * @return string
-     */
-    public function getScriptPath()
-    {
-        return $this->scriptPath ?: $this->path;
-    }
+	/**
+	 * Sets the script-path part of URI.
+	 * @param  string
+	 * @return static
+	 */
+	public function setScriptPath($value)
+	{
+		$this->scriptPath = (string) $value;
+		return $this;
+	}
 
-    /**
-     * Sets the script-path part of URI.
-     * @param  string
-     * @return static
-     */
-    public function setScriptPath($value)
-    {
-        $this->scriptPath = (string)$value;
-        return $this;
-    }
 
-    /**
-     * Returns the additional path information.
-     * @return string
-     */
-    public function getPathInfo()
-    {
-        return (string)substr($this->getPath(), strlen($this->getScriptPath()));
-    }
+	/**
+	 * Returns the script-path part of URI.
+	 * @return string
+	 */
+	public function getScriptPath()
+	{
+		return $this->scriptPath ?: $this->path;
+	}
+
+
+	/**
+	 * Returns the base-path.
+	 * @return string
+	 */
+	public function getBasePath()
+	{
+		$pos = strrpos($this->getScriptPath(), '/');
+		return $pos === false ? '' : substr($this->getPath(), 0, $pos + 1);
+	}
+
+
+	/**
+	 * Returns the additional path information.
+	 * @return string
+	 */
+	public function getPathInfo()
+	{
+		return (string) substr($this->getPath(), strlen($this->getScriptPath()));
+	}
 }

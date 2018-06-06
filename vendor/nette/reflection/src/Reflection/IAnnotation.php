@@ -13,5 +13,5 @@ namespace Nette\Reflection;
  */
 interface IAnnotation
 {
-    function __construct(array $values);
+	function __construct(array $values);
 }

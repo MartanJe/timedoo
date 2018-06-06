@@ -14,38 +14,38 @@ namespace Nette\Forms\Controls;
 class ImageButton extends SubmitButton
 {
 
-    /**
-     * @param  string  URI of the image
-     * @param  string  alternate text for the image
-     */
-    public function __construct($src = null, $alt = null)
-    {
-        parent::__construct();
-        $this->control->type = 'image';
-        $this->control->src = $src;
-        $this->control->alt = $alt;
-    }
+	/**
+	 * @param  string  URI of the image
+	 * @param  string  alternate text for the image
+	 */
+	public function __construct($src = null, $alt = null)
+	{
+		parent::__construct();
+		$this->control->type = 'image';
+		$this->control->src = $src;
+		$this->control->alt = $alt;
+	}
 
 
-    /**
-     * Loads HTTP data.
-     * @return void
-     */
-    public function loadHttpData()
-    {
-        parent::loadHttpData();
-        $this->value = $this->value
-            ? [(int)array_shift($this->value), (int)array_shift($this->value)]
-            : null;
-    }
+	/**
+	 * Loads HTTP data.
+	 * @return void
+	 */
+	public function loadHttpData()
+	{
+		parent::loadHttpData();
+		$this->value = $this->value
+			? [(int) array_shift($this->value), (int) array_shift($this->value)]
+			: null;
+	}
 
 
-    /**
-     * Returns HTML name of control.
-     * @return string
-     */
-    public function getHtmlName()
-    {
-        return parent::getHtmlName() . '[]';
-    }
+	/**
+	 * Returns HTML name of control.
+	 * @return string
+	 */
+	public function getHtmlName()
+	{
+		return parent::getHtmlName() . '[]';
+	}
 }

@@ -3,22 +3,22 @@
  */
 
 .tracy-collapsed {
-    display: none;
+	display: none;
 }
 
 .tracy-toggle.tracy-collapsed {
-    display: inline;
+	display: inline;
 }
 
 .tracy-toggle {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .tracy-toggle:after {
-    content: "\A0\25BC";
-    opacity: .4;
+	content: "\A0\25BC";
+	opacity: .4;
 }
 
 .tracy-toggle.tracy-collapsed:after {
-    content: "\A0\25BA";
+	content: "\A0\25BA";
 }

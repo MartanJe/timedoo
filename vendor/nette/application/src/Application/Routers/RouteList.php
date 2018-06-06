@@ -15,116 +15,116 @@ use Nette;
  */
 class RouteList extends Nette\Utils\ArrayList implements Nette\Application\IRouter
 {
-    /** @var array */
-    private $cachedRoutes;
+	/** @var array */
+	private $cachedRoutes;
 
-    /** @var string|null */
-    private $module;
-
-
-    public function __construct($module = null)
-    {
-        $this->module = $module ? $module . ':' : '';
-    }
+	/** @var string|null */
+	private $module;
 
 
-    /**
-     * Maps HTTP request to a Request object.
-     * @return Nette\Application\Request|null
-     */
-    public function match(Nette\Http\IRequest $httpRequest)
-    {
-        foreach ($this as $route) {
-            $appRequest = $route->match($httpRequest);
-            if ($appRequest !== null) {
-                $name = $appRequest->getPresenterName();
-                if (strncmp($name, 'Nette:', 6)) {
-                    $appRequest->setPresenterName($this->module . $name);
-                }
-                return $appRequest;
-            }
-        }
-        return null;
-    }
+	public function __construct($module = null)
+	{
+		$this->module = $module ? $module . ':' : '';
+	}
 
 
-    /**
-     * Constructs absolute URL from Request object.
-     * @return string|null
-     */
-    public function constructUrl(Nette\Application\Request $appRequest, Nette\Http\Url $refUrl)
-    {
-        if ($this->cachedRoutes === null) {
-            $this->warmupCache();
-        }
-
-        if ($this->module) {
-            if (strncmp($tmp = $appRequest->getPresenterName(), $this->module, strlen($this->module)) === 0) {
-                $appRequest = clone $appRequest;
-                $appRequest->setPresenterName(substr($tmp, strlen($this->module)));
-            } else {
-                return null;
-            }
-        }
-
-        $presenter = $appRequest->getPresenterName();
-        if (!isset($this->cachedRoutes[$presenter])) {
-            $presenter = '*';
-        }
-
-        foreach ($this->cachedRoutes[$presenter] as $route) {
-            $url = $route->constructUrl($appRequest, $refUrl);
-            if ($url !== null) {
-                return $url;
-            }
-        }
-
-        return null;
-    }
+	/**
+	 * Maps HTTP request to a Request object.
+	 * @return Nette\Application\Request|null
+	 */
+	public function match(Nette\Http\IRequest $httpRequest)
+	{
+		foreach ($this as $route) {
+			$appRequest = $route->match($httpRequest);
+			if ($appRequest !== null) {
+				$name = $appRequest->getPresenterName();
+				if (strncmp($name, 'Nette:', 6)) {
+					$appRequest->setPresenterName($this->module . $name);
+				}
+				return $appRequest;
+			}
+		}
+		return null;
+	}
 
 
-    public function warmupCache()
-    {
-        $routes = [];
-        $routes['*'] = [];
+	/**
+	 * Constructs absolute URL from Request object.
+	 * @return string|null
+	 */
+	public function constructUrl(Nette\Application\Request $appRequest, Nette\Http\Url $refUrl)
+	{
+		if ($this->cachedRoutes === null) {
+			$this->warmupCache();
+		}
 
-        foreach ($this as $route) {
-            $presenters = $route instanceof Route && is_array($tmp = $route->getTargetPresenters())
-                ? $tmp
-                : array_keys($routes);
+		if ($this->module) {
+			if (strncmp($tmp = $appRequest->getPresenterName(), $this->module, strlen($this->module)) === 0) {
+				$appRequest = clone $appRequest;
+				$appRequest->setPresenterName(substr($tmp, strlen($this->module)));
+			} else {
+				return null;
+			}
+		}
 
-            foreach ($presenters as $presenter) {
-                if (!isset($routes[$presenter])) {
-                    $routes[$presenter] = $routes['*'];
-                }
-                $routes[$presenter][] = $route;
-            }
-        }
+		$presenter = $appRequest->getPresenterName();
+		if (!isset($this->cachedRoutes[$presenter])) {
+			$presenter = '*';
+		}
 
-        $this->cachedRoutes = $routes;
-    }
+		foreach ($this->cachedRoutes[$presenter] as $route) {
+			$url = $route->constructUrl($appRequest, $refUrl);
+			if ($url !== null) {
+				return $url;
+			}
+		}
 
-
-    /**
-     * Adds the router.
-     * @param  mixed
-     * @param  Nette\Application\IRouter
-     * @return void
-     */
-    public function offsetSet($index, $route)
-    {
-        if (!$route instanceof Nette\Application\IRouter) {
-            throw new Nette\InvalidArgumentException('Argument must be IRouter descendant.');
-        }
-        parent::offsetSet($index, $route);
-    }
+		return null;
+	}
 
 
-    /**
-     * @return string|null
-     */
-    public function getModule()
-    {
-        return $this->module;
-    }
+	public function warmupCache()
+	{
+		$routes = [];
+		$routes['*'] = [];
+
+		foreach ($this as $route) {
+			$presenters = $route instanceof Route && is_array($tmp = $route->getTargetPresenters())
+				? $tmp
+				: array_keys($routes);
+
+			foreach ($presenters as $presenter) {
+				if (!isset($routes[$presenter])) {
+					$routes[$presenter] = $routes['*'];
+				}
+				$routes[$presenter][] = $route;
+			}
+		}
+
+		$this->cachedRoutes = $routes;
+	}
+
+
+	/**
+	 * Adds the router.
+	 * @param  mixed
+	 * @param  Nette\Application\IRouter
+	 * @return void
+	 */
+	public function offsetSet($index, $route)
+	{
+		if (!$route instanceof Nette\Application\IRouter) {
+			throw new Nette\InvalidArgumentException('Argument must be IRouter descendant.');
+		}
+		parent::offsetSet($index, $route);
+	}
+
+
+	/**
+	 * @return string|null
+	 */
+	public function getModule()
+	{
+		return $this->module;
+	}
 }

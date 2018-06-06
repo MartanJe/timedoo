@@ -15,53 +15,53 @@ use Nette;
  */
 class DIExtension extends Nette\DI\CompilerExtension
 {
-    public $defaults = [
-        'debugger' => true,
-        'accessors' => false,
-        'excluded' => [],
-        'parentClass' => null,
-    ];
+	public $defaults = [
+		'debugger' => true,
+		'accessors' => false,
+		'excluded' => [],
+		'parentClass' => null,
+	];
 
-    /** @var bool */
-    private $debugMode;
+	/** @var bool */
+	private $debugMode;
 
-    /** @var int */
-    private $time;
-
-
-    public function __construct($debugMode = false)
-    {
-        $this->debugMode = $debugMode;
-        $this->time = microtime(true);
-    }
+	/** @var int */
+	private $time;
 
 
-    public function loadConfiguration()
-    {
-        $config = $this->validateConfig($this->defaults);
-        $builder = $this->getContainerBuilder();
-        $builder->addExcludedClasses($config['excluded']);
-    }
+	public function __construct($debugMode = false)
+	{
+		$this->debugMode = $debugMode;
+		$this->time = microtime(true);
+	}
 
 
-    public function afterCompile(Nette\PhpGenerator\ClassType $class)
-    {
-        if ($this->config['parentClass']) {
-            $class->setExtends($this->config['parentClass']);
-        }
+	public function loadConfiguration()
+	{
+		$config = $this->validateConfig($this->defaults);
+		$builder = $this->getContainerBuilder();
+		$builder->addExcludedClasses($config['excluded']);
+	}
 
-        $initialize = $class->getMethod('initialize');
-        $builder = $this->getContainerBuilder();
 
-        if ($this->debugMode && $this->config['debugger']) {
-            Nette\Bridges\DITracy\ContainerPanel::$compilationTime = $this->time;
-            $initialize->addBody($builder->formatPhp('?;', [
-                new Nette\DI\Statement('@Tracy\Bar::addPanel', [new Nette\DI\Statement(Nette\Bridges\DITracy\ContainerPanel::class)]),
-            ]));
-        }
+	public function afterCompile(Nette\PhpGenerator\ClassType $class)
+	{
+		if ($this->config['parentClass']) {
+			$class->setExtends($this->config['parentClass']);
+		}
 
-        foreach (array_filter($builder->findByTag('run')) as $name => $on) {
-            $initialize->addBody('$this->getService(?);', [$name]);
-        }
-    }
+		$initialize = $class->getMethod('initialize');
+		$builder = $this->getContainerBuilder();
+
+		if ($this->debugMode && $this->config['debugger']) {
+			Nette\Bridges\DITracy\ContainerPanel::$compilationTime = $this->time;
+			$initialize->addBody($builder->formatPhp('?;', [
+				new Nette\DI\Statement('@Tracy\Bar::addPanel', [new Nette\DI\Statement(Nette\Bridges\DITracy\ContainerPanel::class)]),
+			]));
+		}
+
+		foreach (array_filter($builder->findByTag('run')) as $name => $on) {
+			$initialize->addBody('$this->getService(?);', [$name]);
+		}
+	}
 }

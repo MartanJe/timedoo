@@ -17,32 +17,32 @@ use Nette;
  */
 class GlobalFunction
 {
-    use Nette\SmartObject;
-    use Traits\FunctionLike;
-    use Traits\NameAware;
-    use Traits\CommentAware;
+	use Nette\SmartObject;
+	use Traits\FunctionLike;
+	use Traits\NameAware;
+	use Traits\CommentAware;
 
-    /**
-     * @param  string
-     * @return static
-     */
-    public static function from($function)
-    {
-        return (new Factory)->fromFunctionReflection(new \ReflectionFunction($function));
-    }
+	/**
+	 * @param  string
+	 * @return static
+	 */
+	public static function from($function)
+	{
+		return (new Factory)->fromFunctionReflection(new \ReflectionFunction($function));
+	}
 
 
-    /**
-     * @return string  PHP code
-     */
-    public function __toString()
-    {
-        return Helpers::formatDocComment($this->comment . "\n")
-            . 'function '
-            . ($this->returnReference ? '&' : '')
-            . $this->name
-            . $this->parametersToString()
-            . $this->returnTypeToString()
-            . "\n{\n" . Nette\Utils\Strings::indent(ltrim(rtrim($this->body) . "\n"), 1) . '}';
-    }
+	/**
+	 * @return string  PHP code
+	 */
+	public function __toString()
+	{
+		return Helpers::formatDocComment($this->comment . "\n")
+			. 'function '
+			. ($this->returnReference ? '&' : '')
+			. $this->name
+			. $this->parametersToString()
+			. $this->returnTypeToString()
+			. "\n{\n" . Nette\Utils\Strings::indent(ltrim(rtrim($this->body) . "\n"), 1) . '}';
+	}
 }

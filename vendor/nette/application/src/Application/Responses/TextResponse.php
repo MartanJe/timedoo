@@ -15,41 +15,41 @@ use Nette;
  */
 class TextResponse implements Nette\Application\IResponse
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    /** @var mixed */
-    private $source;
-
-
-    /**
-     * @param  mixed  renderable variable
-     */
-    public function __construct($source)
-    {
-        $this->source = $source;
-    }
+	/** @var mixed */
+	private $source;
 
 
-    /**
-     * @return mixed
-     */
-    public function getSource()
-    {
-        return $this->source;
-    }
+	/**
+	 * @param  mixed  renderable variable
+	 */
+	public function __construct($source)
+	{
+		$this->source = $source;
+	}
 
 
-    /**
-     * Sends response to output.
-     * @return void
-     */
-    public function send(Nette\Http\IRequest $httpRequest, Nette\Http\IResponse $httpResponse)
-    {
-        if ($this->source instanceof Nette\Application\UI\ITemplate) {
-            $this->source->render();
+	/**
+	 * @return mixed
+	 */
+	public function getSource()
+	{
+		return $this->source;
+	}
 
-        } else {
-            echo $this->source;
-        }
-    }
+
+	/**
+	 * Sends response to output.
+	 * @return void
+	 */
+	public function send(Nette\Http\IRequest $httpRequest, Nette\Http\IResponse $httpResponse)
+	{
+		if ($this->source instanceof Nette\Application\UI\ITemplate) {
+			$this->source->render();
+
+		} else {
+			echo $this->source;
+		}
+	}
 }

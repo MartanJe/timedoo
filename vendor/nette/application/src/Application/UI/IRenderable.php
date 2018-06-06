@@ -14,15 +14,15 @@ namespace Nette\Application\UI;
 interface IRenderable
 {
 
-    /**
-     * Forces control to repaint.
-     * @return void
-     */
-    function redrawControl();
+	/**
+	 * Forces control to repaint.
+	 * @return void
+	 */
+	function redrawControl();
 
-    /**
-     * Is required to repaint the control?
-     * @return bool
-     */
-    function isControlInvalid();
+	/**
+	 * Is required to repaint the control?
+	 * @return bool
+	 */
+	function isControlInvalid();
 }

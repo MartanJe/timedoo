@@ -2,10 +2,10 @@
 
 namespace App\TrackModule\Presenters;
 
-use App\Presenters\BasePresenter;
 use App\TrackModule\Model\InviteManager;
 use App\TrackModule\Model\ProjectManager;
 use App\TrackModule\Model\TaskManager;
+use App\Presenters\BasePresenter;
 
 class RequestsPresenter extends BasePresenter
 {
@@ -19,22 +19,23 @@ class RequestsPresenter extends BasePresenter
 
     /**
      * Constructor with injected models for work with projects and tasks
-     * @param ProjectManager $projectManager automatically injected class for work with projects
-     * @param TaskManager $taskManager automatically injected class for work with tasks
+     * @param ProjectManager $projectManager  automatically injected class for work with projects
+     * @param TaskManager $taskManager        automatically injected class for work with tasks
      */
     public function __construct(ProjectManager $projectManager, TaskManager $taskManager, InviteManager $inviteManager)
     {
         parent::__construct();
-        $this->m_projectManager = $projectManager;
-        $this->m_taskManager = $taskManager;
-        $this->m_inviteManager = $inviteManager;
+        $this->m_projectManager  = $projectManager;
+        $this->m_taskManager     = $taskManager;
+        $this->m_inviteManager   = $inviteManager;
     }
 
     /** vyrenderuje to default sablony */
     public function renderDefault()
     {
         $invitations = $this->m_inviteManager->getInvitations($this->user->getId());
-        if (!$invitations->fetch()) {
+        if( ! $invitations->fetch() )
+        {
             $this->flashMessage("You don't have any new requests. ", "info");
         }
         $this->template->invitations = $invitations;
@@ -48,22 +49,25 @@ class RequestsPresenter extends BasePresenter
         $this->redrawRequestTable();
     }
 
-    private function redrawRequestTable()
-    {
-        $invitations = $this->m_inviteManager->getInvitations($this->user->getId());
-        if (!$invitations->fetch()) {
-            $this->flashMessage("You don't have any new requests. ", "info");
-        }
-        $this->template->invitations = $invitations;
-        $this->redrawControl('requestTable');
-        $this->redrawControl('messages');
-        return true;
-    }
 
     public function handleRequestDecline($fromID, $porojectID)
     {
         $this->m_inviteManager->declineInvitation($fromID, $this->user->getId(), $porojectID);
         $this->flashMessage("Request declined", "info");
         $this->redrawRequestTable();
+    }
+
+
+    private function redrawRequestTable()
+    {
+        $invitations = $this->m_inviteManager->getInvitations($this->user->getId());
+        if( ! $invitations->fetch() )
+        {
+            $this->flashMessage("You don't have any new requests. ", "info");
+        }
+        $this->template->invitations = $invitations;
+        $this->redrawControl('requestTable');
+        $this->redrawControl('messages');
+        return true;
     }
 }

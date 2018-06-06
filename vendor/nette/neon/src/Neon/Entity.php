@@ -13,22 +13,22 @@ namespace Nette\Neon;
  */
 class Entity extends \stdClass
 {
-    /** @var mixed */
-    public $value;
+	/** @var mixed */
+	public $value;
 
-    /** @var array */
-    public $attributes;
-
-
-    public function __construct($value = null, array $attrs = null)
-    {
-        $this->value = $value;
-        $this->attributes = (array)$attrs;
-    }
+	/** @var array */
+	public $attributes;
 
 
-    public static function __set_state(array $properties)
-    {
-        return new self($properties['value'], $properties['attributes']);
-    }
+	public function __construct($value = null, array $attrs = null)
+	{
+		$this->value = $value;
+		$this->attributes = (array) $attrs;
+	}
+
+
+	public static function __set_state(array $properties)
+	{
+		return new self($properties['value'], $properties['attributes']);
+	}
 }

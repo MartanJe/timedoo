@@ -15,28 +15,30 @@ use Nette;
  */
 class Constant
 {
-    use Nette\SmartObject;
-    use Traits\NameAware;
-    use Traits\VisibilityAware;
-    use Traits\CommentAware;
+	use Nette\SmartObject;
+	use Traits\NameAware;
+	use Traits\VisibilityAware;
+	use Traits\CommentAware;
 
-    /** @var mixed */
-    private $value;
+	/** @var mixed */
+	private $value;
 
-    /**
-     * @return mixed
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
 
-    /**
-     * @return static
-     */
-    public function setValue($val)
-    {
-        $this->value = $val;
-        return $this;
-    }
+	/**
+	 * @return static
+	 */
+	public function setValue($val)
+	{
+		$this->value = $val;
+		return $this;
+	}
+
+
+	/**
+	 * @return mixed
+	 */
+	public function getValue()
+	{
+		return $this->value;
+	}
 }

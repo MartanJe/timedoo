@@ -14,18 +14,18 @@ namespace Nette\Application;
 interface IPresenterFactory
 {
 
-    /**
-     * Generates and checks presenter class name.
-     * @param  string  presenter name
-     * @return string  class name
-     * @throws InvalidPresenterException
-     */
-    function getPresenterClass(&$name);
+	/**
+	 * Generates and checks presenter class name.
+	 * @param  string  presenter name
+	 * @return string  class name
+	 * @throws InvalidPresenterException
+	 */
+	function getPresenterClass(&$name);
 
-    /**
-     * Creates new presenter instance.
-     * @param  string  presenter name
-     * @return IPresenter
-     */
-    function createPresenter($name);
+	/**
+	 * Creates new presenter instance.
+	 * @param  string  presenter name
+	 * @return IPresenter
+	 */
+	function createPresenter($name);
 }

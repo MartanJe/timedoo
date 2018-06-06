@@ -53,10 +53,8 @@
                         <td>{$invite->date_invite}</td>
                         <td>
                             <ol class="breadcrumb cum">
-                                <li><a n:href="RequestAccept! $invite->id_user_from , $invite->id_project" class="ajax">
-                                        <i class="fa fa-check green"></i> </a></li>
-                                <li><a n:href="RequestDecline! $invite->id_user_from , $invite->id_project"
-                                            class="ajax"><i class="fa fa-times red"></i></a></li>
+                                <li><a n:href="RequestAccept! $invite->id_user_from , $invite->id_project" class="ajax">  <i class="fa fa-check green"></i>  </a></li>
+                                <li><a n:href="RequestDecline! $invite->id_user_from , $invite->id_project" class="ajax"><i class="fa fa-times red"></i></a></li>
                             </ol>
                         </td>
                     </tr>

@@ -18,77 +18,77 @@ use Nette\Application\UI\IRenderable;
  */
 class SnippetBridge implements ISnippetBridge
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    /** @var Control */
-    private $control;
+	/** @var Control */
+	private $control;
 
-    /** @var \stdClass|null */
-    private $payload;
-
-
-    public function __construct(Control $control)
-    {
-        $this->control = $control;
-    }
+	/** @var \stdClass|null */
+	private $payload;
 
 
-    public function isSnippetMode()
-    {
-        return $this->control->snippetMode;
-    }
+	public function __construct(Control $control)
+	{
+		$this->control = $control;
+	}
 
 
-    public function setSnippetMode($snippetMode)
-    {
-        $this->control->snippetMode = $snippetMode;
-    }
+	public function isSnippetMode()
+	{
+		return $this->control->snippetMode;
+	}
 
 
-    public function needsRedraw($name)
-    {
-        return $this->control->isControlInvalid($name);
-    }
+	public function setSnippetMode($snippetMode)
+	{
+		$this->control->snippetMode = $snippetMode;
+	}
 
 
-    public function markRedrawn($name)
-    {
-        if ($name !== '') {
-            $this->control->redrawControl($name, false);
-        }
-    }
+	public function needsRedraw($name)
+	{
+		return $this->control->isControlInvalid($name);
+	}
 
 
-    public function getHtmlId($name)
-    {
-        return $this->control->getSnippetId($name);
-    }
+	public function markRedrawn($name)
+	{
+		if ($name !== '') {
+			$this->control->redrawControl($name, false);
+		}
+	}
 
 
-    public function addSnippet($name, $content)
-    {
-        if ($this->payload === null) {
-            $this->payload = $this->control->getPresenter()->getPayload();
-        }
-        $this->payload->snippets[$this->control->getSnippetId($name)] = $content;
-    }
+	public function getHtmlId($name)
+	{
+		return $this->control->getSnippetId($name);
+	}
 
 
-    public function renderChildren()
-    {
-        $queue = [$this->control];
-        do {
-            foreach (array_shift($queue)->getComponents() as $child) {
-                if ($child instanceof IRenderable) {
-                    if ($child->isControlInvalid()) {
-                        $child->snippetMode = true;
-                        $child->render();
-                        $child->snippetMode = false;
-                    }
-                } elseif ($child instanceof Nette\ComponentModel\IContainer) {
-                    $queue[] = $child;
-                }
-            }
-        } while ($queue);
-    }
+	public function addSnippet($name, $content)
+	{
+		if ($this->payload === null) {
+			$this->payload = $this->control->getPresenter()->getPayload();
+		}
+		$this->payload->snippets[$this->control->getSnippetId($name)] = $content;
+	}
+
+
+	public function renderChildren()
+	{
+		$queue = [$this->control];
+		do {
+			foreach (array_shift($queue)->getComponents() as $child) {
+				if ($child instanceof IRenderable) {
+					if ($child->isControlInvalid()) {
+						$child->snippetMode = true;
+						$child->render();
+						$child->snippetMode = false;
+					}
+				} elseif ($child instanceof Nette\ComponentModel\IContainer) {
+					$queue[] = $child;
+				}
+			}
+		} while ($queue);
+	}
 }

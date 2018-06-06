@@ -14,22 +14,22 @@ namespace Nette\Application\UI;
 interface ITemplate
 {
 
-    /**
-     * Renders template to output.
-     * @return void
-     */
-    function render();
+	/**
+	 * Renders template to output.
+	 * @return void
+	 */
+	function render();
 
-    /**
-     * Sets the path to the template file.
-     * @param  string
-     * @return static
-     */
-    function setFile($file);
+	/**
+	 * Sets the path to the template file.
+	 * @param  string
+	 * @return static
+	 */
+	function setFile($file);
 
-    /**
-     * Returns the path to the template file.
-     * @return string|null
-     */
-    function getFile();
+	/**
+	 * Returns the path to the template file.
+	 * @return string|null
+	 */
+	function getFile();
 }

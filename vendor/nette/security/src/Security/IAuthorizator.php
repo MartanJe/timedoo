@@ -14,21 +14,21 @@ namespace Nette\Security;
  */
 interface IAuthorizator
 {
-    /** Set type: all */
-    const ALL = null;
+	/** Set type: all */
+	const ALL = null;
 
-    /** Permission type: allow */
-    const ALLOW = true;
+	/** Permission type: allow */
+	const ALLOW = true;
 
-    /** Permission type: deny */
-    const DENY = false;
+	/** Permission type: deny */
+	const DENY = false;
 
-    /**
-     * Performs a role-based authorization.
-     * @param  string|null
-     * @param  string|null
-     * @param  string|null
-     * @return bool
-     */
-    function isAllowed($role, $resource, $privilege);
+	/**
+	 * Performs a role-based authorization.
+	 * @param  string|null
+	 * @param  string|null
+	 * @param  string|null
+	 * @return bool
+	 */
+	function isAllowed($role, $resource, $privilege);
 }

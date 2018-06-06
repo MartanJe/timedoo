@@ -14,27 +14,27 @@ namespace Latte;
 interface ILoader
 {
 
-    /**
-     * Returns template source code.
-     * @return string
-     */
-    function getContent($name);
+	/**
+	 * Returns template source code.
+	 * @return string
+	 */
+	function getContent($name);
 
-    /**
-     * Checks whether template is expired.
-     * @return bool
-     */
-    function isExpired($name, $time);
+	/**
+	 * Checks whether template is expired.
+	 * @return bool
+	 */
+	function isExpired($name, $time);
 
-    /**
-     * Returns referred template name.
-     * @return string
-     */
-    function getReferredName($name, $referringName);
+	/**
+	 * Returns referred template name.
+	 * @return string
+	 */
+	function getReferredName($name, $referringName);
 
-    /**
-     * Returns unique identifier for caching.
-     * @return string
-     */
-    function getUniqueId($name);
+	/**
+	 * Returns unique identifier for caching.
+	 * @return string
+	 */
+	function getUniqueId($name);
 }

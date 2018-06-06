@@ -14,9 +14,9 @@ namespace Nette\Security;
 interface IRole
 {
 
-    /**
-     * Returns a string identifier of the Role.
-     * @return string
-     */
-    function getRoleId();
+	/**
+	 * Returns a string identifier of the Role.
+	 * @return string
+	 */
+	function getRoleId();
 }

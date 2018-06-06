@@ -14,10 +14,10 @@ namespace Nette\Mail;
 interface IMailer
 {
 
-    /**
-     * Sends email.
-     * @return void
-     * @throws SendException
-     */
-    function send(Message $mail);
+	/**
+	 * Sends email.
+	 * @return void
+	 * @throws SendException
+	 */
+	function send(Message $mail);
 }

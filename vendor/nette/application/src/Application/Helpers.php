@@ -15,17 +15,17 @@ use Nette;
  */
 class Helpers
 {
-    use Nette\StaticClass;
+	use Nette\StaticClass;
 
-    /**
-     * Splits name into [module, presenter] or [presenter, action]
-     * @return array
-     */
-    public static function splitName($name)
-    {
-        $pos = strrpos($name, ':');
-        return $pos === false
-            ? ['', $name, '']
-            : [substr($name, 0, $pos), (string)substr($name, $pos + 1), ':'];
-    }
+	/**
+	 * Splits name into [module, presenter] or [presenter, action]
+	 * @return array
+	 */
+	public static function splitName($name)
+	{
+		$pos = strrpos($name, ':');
+		return $pos === false
+			? ['', $name, '']
+			: [substr($name, 0, $pos), (string) substr($name, $pos + 1), ':'];
+	}
 }

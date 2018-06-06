@@ -13,25 +13,25 @@ namespace Nette\ComponentModel;
  */
 interface IComponent
 {
-    /** Separator for component names in path concatenation. */
-    const NAME_SEPARATOR = '-';
+	/** Separator for component names in path concatenation. */
+	const NAME_SEPARATOR = '-';
 
-    /**
-     * @return string|null
-     */
-    function getName();
+	/**
+	 * @return string|null
+	 */
+	function getName();
 
-    /**
-     * Returns the container if any.
-     * @return IContainer|null
-     */
-    function getParent();
+	/**
+	 * Returns the container if any.
+	 * @return IContainer|null
+	 */
+	function getParent();
 
-    /**
-     * Sets the parent of this component.
-     * @param  IContainer
-     * @param  string
-     * @return static
-     */
-    function setParent(IContainer $parent = null, $name = null);
+	/**
+	 * Sets the parent of this component.
+	 * @param  IContainer
+	 * @param  string
+	 * @return static
+	 */
+	function setParent(IContainer $parent = null, $name = null);
 }

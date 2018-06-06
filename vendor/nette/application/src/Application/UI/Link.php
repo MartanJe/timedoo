@@ -16,90 +16,90 @@ use Nette;
  */
 class Link
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    /** @var Component */
-    private $component;
+	/** @var Component */
+	private $component;
 
-    /** @var string */
-    private $destination;
+	/** @var string */
+	private $destination;
 
-    /** @var array */
-    private $params;
-
-
-    /**
-     * Link specification.
-     */
-    public function __construct(Component $component, $destination, array $params = [])
-    {
-        $this->component = $component;
-        $this->destination = $destination;
-        $this->params = $params;
-    }
+	/** @var array */
+	private $params;
 
 
-    /**
-     * Returns link destination.
-     * @return string
-     */
-    public function getDestination()
-    {
-        return $this->destination;
-    }
+	/**
+	 * Link specification.
+	 */
+	public function __construct(Component $component, $destination, array $params = [])
+	{
+		$this->component = $component;
+		$this->destination = $destination;
+		$this->params = $params;
+	}
 
 
-    /**
-     * Changes link parameter.
-     * @param  string
-     * @param  mixed
-     * @return static
-     */
-    public function setParameter($key, $value)
-    {
-        $this->params[$key] = $value;
-        return $this;
-    }
+	/**
+	 * Returns link destination.
+	 * @return string
+	 */
+	public function getDestination()
+	{
+		return $this->destination;
+	}
 
 
-    /**
-     * Returns link parameter.
-     * @param  string
-     * @return mixed
-     */
-    public function getParameter($key)
-    {
-        return isset($this->params[$key]) ? $this->params[$key] : null;
-    }
+	/**
+	 * Changes link parameter.
+	 * @param  string
+	 * @param  mixed
+	 * @return static
+	 */
+	public function setParameter($key, $value)
+	{
+		$this->params[$key] = $value;
+		return $this;
+	}
 
 
-    /**
-     * Returns link parameters.
-     * @return array
-     */
-    public function getParameters()
-    {
-        return $this->params;
-    }
+	/**
+	 * Returns link parameter.
+	 * @param  string
+	 * @return mixed
+	 */
+	public function getParameter($key)
+	{
+		return isset($this->params[$key]) ? $this->params[$key] : null;
+	}
 
 
-    /**
-     * Converts link to URL.
-     * @return string
-     */
-    public function __toString()
-    {
-        try {
-            return (string)$this->component->link($this->destination, $this->params);
+	/**
+	 * Returns link parameters.
+	 * @return array
+	 */
+	public function getParameters()
+	{
+		return $this->params;
+	}
 
-        } catch (\Exception $e) {
-        } catch (\Throwable $e) {
-        }
-        if (isset($e)) {
-            if (func_num_args()) {
-                throw $e;
-            }
-            trigger_error('Exception in ' . __METHOD__ . "(): {$e->getMessage()} in {$e->getFile()}:{$e->getLine()}", E_USER_ERROR);
-        }
-    }
+
+	/**
+	 * Converts link to URL.
+	 * @return string
+	 */
+	public function __toString()
+	{
+		try {
+			return (string) $this->component->link($this->destination, $this->params);
+
+		} catch (\Exception $e) {
+		} catch (\Throwable $e) {
+		}
+		if (isset($e)) {
+			if (func_num_args()) {
+				throw $e;
+			}
+			trigger_error('Exception in ' . __METHOD__ . "(): {$e->getMessage()} in {$e->getFile()}:{$e->getLine()}", E_USER_ERROR);
+		}
+	}
 }

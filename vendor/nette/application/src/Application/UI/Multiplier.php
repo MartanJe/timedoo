@@ -15,19 +15,19 @@ use Nette;
  */
 class Multiplier extends Component
 {
-    /** @var callable */
-    private $factory;
+	/** @var callable */
+	private $factory;
 
 
-    public function __construct(callable $factory)
-    {
-        parent::__construct();
-        $this->factory = $factory;
-    }
+	public function __construct(callable $factory)
+	{
+		parent::__construct();
+		$this->factory = $factory;
+	}
 
 
-    protected function createComponent($name)
-    {
-        return call_user_func($this->factory, $name, $this);
-    }
+	protected function createComponent($name)
+	{
+		return call_user_func($this->factory, $name, $this);
+	}
 }

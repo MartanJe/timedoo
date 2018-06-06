@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="Martin Jenc" content="">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="Martin Jenc" content="">
 
-    <title>Timer - Timedoo</title>
+	<title>Timer - Timedoo</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="{$basePath}/css/bootstrap.css" rel="stylesheet">
+	<!-- Bootstrap core CSS -->
+	<link href="{$basePath}/css/bootstrap.css" rel="stylesheet">
 
-    <!-- Add custom CSS here -->
-    <link href="{$basePath}/css/sb-admin.css" rel="stylesheet">
-    <link rel="stylesheet" href="{$basePath}/font-awesome/css/font-awesome.min.css">
-    <!-- Page Specific CSS -->
-    <link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
+	<!-- Add custom CSS here -->
+	<link href="{$basePath}/css/sb-admin.css" rel="stylesheet">
+	<link rel="stylesheet" href="{$basePath}/font-awesome/css/font-awesome.min.css">
+	<!-- Page Specific CSS -->
+	<link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
 </head>
 
 <body>
 
 <div id="wrapper">
 
-    <!------------------ Sidebar --------------------------->
+	<!------------------ Sidebar --------------------------->
     <!------------------ HORNII FAKIN LISTA JE TO NAV --------------------------->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 
@@ -40,46 +40,38 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             {snippet timerMenu}
-                <ul class="nav navbar-nav side-nav">
+            <ul class="nav navbar-nav side-nav">
 
-                    <li {ifCurrent :Track:Timer:}class="active"{/ifCurrent}><a n:href=":Track:Timer:"><i
-                                    class="fa fa-clock-o"></i> Timer {if $active == 1}  <span class="timer"></span>{/if}
-                        </a></li>
-                    <li {ifCurrent :Track:Projects:}class="active"{/ifCurrent}><a n:href=":Track:Projects:"><i
-                                    class="fa fa-edit"></i> Projects</a></li>
+                <li {ifCurrent :Track:Timer:}class="active"{/ifCurrent}><a n:href=":Track:Timer:"><i class="fa fa-clock-o"></i> Timer  {if $active == 1}  <span class="timer"></span>{/if}</a>   </li>
+                <li {ifCurrent :Track:Projects:}class="active"{/ifCurrent}><a n:href=":Track:Projects:"><i class="fa fa-edit"></i> Projects</a></li>
 
-                    <li class="dropdown {ifCurrent :Track:Stats:}active{/ifCurrent}">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bar-chart-o"></i>
-                            Stats <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li {ifCurrent :Track:Stats:default}class="active"{/ifCurrent}>
-                                <a n:href=":Track:Stats:default">Overall</a></li>
-                            <li {ifCurrent :Track:Stats:inDepth}class="active"{/ifCurrent}>
-                                <a n:href=":Track:Stats:inDepth">In-depth</a></li>
-                        </ul>
-                    </li>
-
-                    <li {ifCurrent :Track:Requests:}class="active"{/ifCurrent}><a n:href=":Track:Requests:default"><i
-                                    class="fa fa-bell-o"></i> Requests</a></li>
-
-                </ul>
-
-            {/snippet}
-            <!--------- TOP NAVBAR  pouze ikonky ----------->
-            <ul class="nav navbar-nav navbar-right navbar-user">
-
-                <li class="dropdown user-dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {$userName} <b
-                                class="caret"></b></a>
+                <li class="dropdown {ifCurrent :Track:Stats:}active{/ifCurrent}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bar-chart-o"></i> Stats <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#"><i class="fa fa-user"></i> Profile settings</a></li>
-                        <li class="divider"></li>
-                        <li><a n:href=":Track:Login:logout"><i class="fa fa-power-off"></i> Log Out</a></li>
+                        <li {ifCurrent :Track:Stats:default}class="active"{/ifCurrent}><a n:href=":Track:Stats:default">Overall</a></li>
+                        <li {ifCurrent :Track:Stats:inDepth}class="active"{/ifCurrent}><a n:href=":Track:Stats:inDepth">In-depth</a></li>
                     </ul>
                 </li>
+
+                <li {ifCurrent :Track:Requests:}class="active"{/ifCurrent}><a n:href=":Track:Requests:default"><i class="fa fa-bell-o"></i> Requests</a></li>
+
             </ul>
-        </div><!-- /.navbar-collapse -->
-    </nav>
+
+            {/snippet}
+			<!--------- TOP NAVBAR  pouze ikonky ----------->
+			<ul class="nav navbar-nav navbar-right navbar-user">
+
+				<li class="dropdown user-dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {$userName} <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="#"><i class="fa fa-user"></i> Profile settings</a></li>
+						<li class="divider"></li>
+						<li><a n:href=":Track:Login:logout"><i class="fa fa-power-off"></i> Log Out</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div><!-- /.navbar-collapse -->
+	</nav>
 
     <!-- JavaScript -->
     <script src="{$basePath}/js/jquery-1.10.2.js"></script>
@@ -98,7 +90,7 @@
         <script src="https://nette.github.io/resources/js/netteForms.min.js"></script>
 
 
-        {*  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>*}
+      {*  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>*}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 
         <script src="{$basePath}/js/countimer.js"></script>
@@ -117,19 +109,24 @@
             });
         </script>
     {/block}
-    <!----------------- PAGE CONTENT ------------------------------------------------------------>
-    <div id="page-wrapper">
+	<!----------------- PAGE CONTENT ------------------------------------------------------------>
+	<div id="page-wrapper">
 
         {include content}
 
 
-    </div><!-- /#page-wrapper -->
+
+	</div><!-- /#page-wrapper -->
 
 
-    <!----------------- PAGE CONTENT ------------------------------------------------------------>
+
+	<!----------------- PAGE CONTENT ------------------------------------------------------------>
 
 
 </div><!-- /#wrapper -->
+
+
+
 
 
 </body>

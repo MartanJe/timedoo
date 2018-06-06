@@ -15,23 +15,23 @@ use Nette;
  */
 class Rule
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    /** @var IControl */
-    public $control;
+	/** @var IControl */
+	public $control;
 
-    /** @var mixed */
-    public $validator;
+	/** @var mixed */
+	public $validator;
 
-    /** @var mixed */
-    public $arg;
+	/** @var mixed */
+	public $arg;
 
-    /** @var bool */
-    public $isNegative = false;
+	/** @var bool */
+	public $isNegative = false;
 
-    /** @var string */
-    public $message;
+	/** @var string */
+	public $message;
 
-    /** @var Rules  for conditions */
-    public $branch;
+	/** @var Rules  for conditions */
+	public $branch;
 }

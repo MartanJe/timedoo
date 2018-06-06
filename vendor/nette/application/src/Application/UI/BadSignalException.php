@@ -15,6 +15,6 @@ use Nette;
  */
 class BadSignalException extends Nette\Application\BadRequestException
 {
-    /** @var int */
-    protected $code = 403;
+	/** @var int */
+	protected $code = 403;
 }

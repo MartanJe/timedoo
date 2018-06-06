@@ -3,6 +3,9 @@
 namespace App\TrackModule\Model;
 
 use App\Model\AbstractManager;
+use Nette\Database\Table\IRow;
+use Nette\Database\Table\Selection;
+use Nette\Utils\ArrayHash;
 use Nette\UnexpectedValueException;
 
 
@@ -56,6 +59,8 @@ class TaskManager extends AbstractManager
                         FROM activity
                         WHERE  activity.id_task= task.id_task
                         GROUP BY  activity.id_task), 0 ) as status
+                        
+                
                         FROM task JOIN project  JOIN activity
                          WHERE  id_user_processor = ?   AND task.id_project = ? AND ( task.active = 1 OR task.active = ?);
                         ";
@@ -65,7 +70,8 @@ class TaskManager extends AbstractManager
                 return $tasks;
             } /// JSEM ADMIN
             else {
-                $sql2 = "SELECT DISTINCT task.task_name, task.id_task, task.id_project, task.active, (SELECT username FROM user WHERE user.id_user =  task.id_user_author) AS author, (SELECT username FROM user WHERE user.id_user =  task.id_user_processor) AS assignee , 
+                $sql2 = "SELECT DISTINCT task.task_name, task.id_task, task.id_project, task.active, (SELECT username FROM user WHERE user.id_user =  task.id_user_author) AS author, (SELECT username FROM user WHERE user.id_user =  task.id_user_processor) AS assignee ,
+                        
                         COALESCE(  (SELECT  SUM(  
                         TIMESTAMPDIFF(HOUR,`date_activity_start`,  COALESCE( `date_activity_end` , CURRENT_TIMESTAMP)  )  
                         ) 
@@ -79,7 +85,9 @@ class TaskManager extends AbstractManager
                 return $tasks;
             }
         }
+
     }
+
 
     public function getTasksForStats($idUser, $idProject, $showArchived)
     {
@@ -95,7 +103,9 @@ class TaskManager extends AbstractManager
                                                 
                         COALESCE( FLOOR( COALESCE(  (SELECT  SUM(   TIMESTAMPDIFF(SECOND,`date_activity_start`,  COALESCE( `date_activity_end` , CURRENT_TIMESTAMP)  )   ) FROM activity WHERE  activity.id_task= task.id_task GROUP BY  activity.id_task), 0 ) /3600), 0) AS status_h,
                         COALESCE( FLOOR(  MOD(   COALESCE(  (SELECT  SUM(   TIMESTAMPDIFF(SECOND,`date_activity_start`,  COALESCE( `date_activity_end` , CURRENT_TIMESTAMP)  )   ) FROM activity WHERE  activity.id_task= task.id_task GROUP BY  activity.id_task), 0 ) /60 , 60 ) ), 0) AS status_m,
-                        COALESCE( MOD( COALESCE(  (SELECT  SUM(   TIMESTAMPDIFF(SECOND,`date_activity_start`,  COALESCE( `date_activity_end` , CURRENT_TIMESTAMP)  )   ) FROM activity WHERE  activity.id_task= task.id_task GROUP BY  activity.id_task), 0 ) , 60 ), 0) AS status_s                
+                        COALESCE( MOD( COALESCE(  (SELECT  SUM(   TIMESTAMPDIFF(SECOND,`date_activity_start`,  COALESCE( `date_activity_end` , CURRENT_TIMESTAMP)  )   ) FROM activity WHERE  activity.id_task= task.id_task GROUP BY  activity.id_task), 0 ) , 60 ), 0) AS status_s
+                        
+                
                         FROM task JOIN project  JOIN activity
                          WHERE  id_user_processor = ?   AND task.id_project = ? AND ( task.active = 1 OR task.active = ?);
                         ";
@@ -122,7 +132,7 @@ class TaskManager extends AbstractManager
 
 
     // ziska usery a jejich timelog
-    public function getUsersTasksForStats($projectID)
+    public function getUsersTasksForStats( $projectID)
     {
 
         $sql = 'select username, activity.id_user,      
@@ -144,7 +154,7 @@ class TaskManager extends AbstractManager
     public function getUserTasks($userID)
     {
 
-        $sql = 'select project.id_project, project.project_name,  task.id_task, task.task_name , 
+       $sql =  'select project.id_project, project.project_name,  task.id_task, task.task_name , 
                 
                  
                 
@@ -170,6 +180,7 @@ class TaskManager extends AbstractManager
         /// 1 = admin ; 2 = user ; 3 = manager
         ///
         ///
+
         $sql2 = "SELECT DISTINCT task.task_name, task.id_task, task.id_project, (SELECT username FROM user WHERE user.id_user =  task.id_user_author) AS author, (SELECT username FROM user WHERE user.id_user =  task.id_user_processor) AS assignee ,
                         
                         COALESCE(  (SELECT  SUM(  
@@ -181,8 +192,12 @@ class TaskManager extends AbstractManager
                         FROM task JOIN project  JOIN activity
                          WHERE task.id_project = ? AND task.id_user_processor = ?;
                         ";
+
+
         $tasks = $this->m_database->query($sql2, $idProject, $idUser);
         return $tasks;
+
+
     }
 
     public function countTime()
@@ -207,7 +222,7 @@ GROUP BY  activity.id_task), 0 ) as status
 
 FROM task JOIN project  JOIN activity
 WHERE task.id_project = 1;
-";
+" ;
     }
 
     /**
@@ -224,7 +239,7 @@ WHERE task.id_project = 1;
     }
 
 
-    public function deleteTask($idTask)
+    public function deleteTask( $idTask)
     {
         //TODO ODSTRANI SE I AKTIVITA KTERA NA TOMTO PROJEKTU BYLA . DOBRE SPATNE ???
         $sql = "DELETE FROM activity WHERE id_activity IN (SELECT * FROM (
@@ -238,7 +253,7 @@ WHERE task.id_project = 1;
         $this->m_database->query($sql, $idTask);
     }
 
-    public function reassignTask($idTask, $name)
+    public function reassignTask( $idTask, $name)
     {
         $sql = "UPDATE `task` SET `id_user_processor`=? WHERE (`id_task` = ?)";
         $this->m_database->query($sql, $name, $idTask);
@@ -253,12 +268,15 @@ WHERE task.id_project = 1;
 
     public function archiveTask($idTask)
     {
-        $task = $this->m_database->table('task')->where('id_task', $idTask)->fetch();
+        $task = $this->m_database->table('task')->where('id_task',$idTask)->fetch();
 
-        if ($task['active']) {
+        if($task['active'])
+        {
             $sql = "UPDATE `task` SET `active`=0 WHERE (`id_task` = ?)";
             $this->m_database->query($sql, $idTask);
-        } else {
+        }
+        else
+        {
             $sql = "UPDATE `task` SET `active`=1 WHERE (`id_task` = ?)";
             $this->m_database->query($sql, $idTask);
         }
@@ -267,8 +285,11 @@ WHERE task.id_project = 1;
 
     public function isTracking($userID)
     {
+
         $activity = $this->m_database->table('activity')->where('id_user = ? AND active = 1', $userID)->fetch();
+
         return $activity ? true : false;
+
     }
 
     public function getTrackingData($userID)
@@ -276,8 +297,8 @@ WHERE task.id_project = 1;
 
         $activity = $this->m_database->table('activity')->where('id_user', $userID)->where('active', 1)->fetch();
         $task = $this->m_database->table('task')->where('id_task', $activity['id_task'])->fetch();
-        $project = $this->m_database->table('project')->where('id_project', $task['id_project'])->fetch();
-        $data = array('task_name' => $task['task_name'], 'project_name' => $project['project_name'], 'id_activity' => $activity['id_activity'], 'id_task' => $activity['id_task'], 'id_project' => $task['id_project'], 'date_activity_start' => $activity['date_activity_start']);
+        $project = $this->m_database->table('project')->where('id_project',  $task['id_project'])->fetch();
+        $data = array('task_name'=>$task['task_name'],'project_name'=>$project['project_name'] , 'id_activity' => $activity['id_activity'], 'id_task' => $activity['id_task'], 'id_project' => $task['id_project'], 'date_activity_start' => $activity['date_activity_start'] );
 
         return $data;
     }
@@ -310,11 +331,12 @@ WHERE task.id_project = 1;
 
         $seconds = $this->m_database->query($sql, $activityID)->fetch()['seconds'];
         $h = floor($seconds / 3600);
-        $m = floor(($seconds / 60) % 60);
-        $s = ($seconds % 60);
+        $m = floor (($seconds/60)%60);
+        $s = ($seconds%60);
 
-        $data = array('h' => $h, 'm' => $m, 's' => $s);
+        $data = array ('h'=>$h, 'm'=>$m, 's'=>$s);
         return $data;
+
     }
 
     public function getTasksByName($projectID, $taskName)
@@ -325,6 +347,7 @@ WHERE task.id_project = 1;
     public function getTask($idTask)
     {
         return $this->m_database->table('task')->where('id_task', $idTask)->fetch();
+
     }
 
     public function updateTask($taskID, $newName, $newAsigneID)
@@ -347,6 +370,7 @@ WHERE task.id_project = 1;
 
                 from activity  
                 where  id_user = ? and id_task = ?';
+
 
         return $this->m_database->query($sql, $userID, $taskID);
     }

@@ -15,117 +15,117 @@ use Nette;
  */
 class DatabaseExtension extends Nette\DI\CompilerExtension
 {
-    public $databaseDefaults = [
-        'dsn' => null,
-        'user' => null,
-        'password' => null,
-        'options' => null,
-        'debugger' => true,
-        'explain' => true,
-        'reflection' => null, // BC
-        'conventions' => 'discovered', // Nette\Database\Conventions\DiscoveredConventions
-        'autowired' => null,
-    ];
+	public $databaseDefaults = [
+		'dsn' => null,
+		'user' => null,
+		'password' => null,
+		'options' => null,
+		'debugger' => true,
+		'explain' => true,
+		'reflection' => null, // BC
+		'conventions' => 'discovered', // Nette\Database\Conventions\DiscoveredConventions
+		'autowired' => null,
+	];
 
-    /** @var bool */
-    private $debugMode;
-
-
-    public function __construct($debugMode = false)
-    {
-        $this->debugMode = $debugMode;
-    }
+	/** @var bool */
+	private $debugMode;
 
 
-    public function loadConfiguration()
-    {
-        $configs = $this->getConfig();
-        foreach ($configs as $k => $v) {
-            if (is_scalar($v)) {
-                $configs = ['default' => $configs];
-                break;
-            }
-        }
-
-        $defaults = $this->databaseDefaults;
-        $defaults['autowired'] = true;
-        foreach ((array)$configs as $name => $config) {
-            if (!is_array($config)) {
-                continue;
-            }
-            $config = $this->validateConfig($defaults, $config, $this->prefix($name));
-            $defaults['autowired'] = false;
-            $this->setupDatabase($config, $name);
-        }
-    }
+	public function __construct($debugMode = false)
+	{
+		$this->debugMode = $debugMode;
+	}
 
 
-    private function setupDatabase($config, $name)
-    {
-        $builder = $this->getContainerBuilder();
+	public function loadConfiguration()
+	{
+		$configs = $this->getConfig();
+		foreach ($configs as $k => $v) {
+			if (is_scalar($v)) {
+				$configs = ['default' => $configs];
+				break;
+			}
+		}
 
-        foreach ((array)$config['options'] as $key => $value) {
-            if (is_string($value) && preg_match('#^PDO::\w+\z#', $value)) {
-                $config['options'][$key] = $value = constant($value);
-            }
-            if (preg_match('#^PDO::\w+\z#', $key)) {
-                unset($config['options'][$key]);
-                $config['options'][constant($key)] = $value;
-            }
-        }
+		$defaults = $this->databaseDefaults;
+		$defaults['autowired'] = true;
+		foreach ((array) $configs as $name => $config) {
+			if (!is_array($config)) {
+				continue;
+			}
+			$config = $this->validateConfig($defaults, $config, $this->prefix($name));
+			$defaults['autowired'] = false;
+			$this->setupDatabase($config, $name);
+		}
+	}
 
-        $connection = $builder->addDefinition($this->prefix("$name.connection"))
-            ->setClass(Nette\Database\Connection::class, [$config['dsn'], $config['user'], $config['password'], $config['options']])
-            ->setAutowired($config['autowired']);
 
-        $structure = $builder->addDefinition($this->prefix("$name.structure"))
-            ->setClass(Nette\Database\Structure::class)
-            ->setArguments([$connection])
-            ->setAutowired($config['autowired']);
+	private function setupDatabase($config, $name)
+	{
+		$builder = $this->getContainerBuilder();
 
-        if (!empty($config['reflection'])) {
-            $conventionsServiceName = 'reflection';
-            $config['conventions'] = $config['reflection'];
-            if (is_string($config['conventions']) && strtolower($config['conventions']) === 'conventional') {
-                $config['conventions'] = 'Static';
-            }
-        } else {
-            $conventionsServiceName = 'conventions';
-        }
+		foreach ((array) $config['options'] as $key => $value) {
+			if (is_string($value) && preg_match('#^PDO::\w+\z#', $value)) {
+				$config['options'][$key] = $value = constant($value);
+			}
+			if (preg_match('#^PDO::\w+\z#', $key)) {
+				unset($config['options'][$key]);
+				$config['options'][constant($key)] = $value;
+			}
+		}
 
-        if (!$config['conventions']) {
-            $conventions = null;
+		$connection = $builder->addDefinition($this->prefix("$name.connection"))
+			->setClass(Nette\Database\Connection::class, [$config['dsn'], $config['user'], $config['password'], $config['options']])
+			->setAutowired($config['autowired']);
 
-        } elseif (is_string($config['conventions'])) {
-            $conventions = $builder->addDefinition($this->prefix("$name.$conventionsServiceName"))
-                ->setClass(preg_match('#^[a-z]+\z#i', $config['conventions'])
-                    ? 'Nette\Database\Conventions\\' . ucfirst($config['conventions']) . 'Conventions'
-                    : $config['conventions'])
-                ->setArguments(strtolower($config['conventions']) === 'discovered' ? [$structure] : [])
-                ->setAutowired($config['autowired']);
+		$structure = $builder->addDefinition($this->prefix("$name.structure"))
+			->setClass(Nette\Database\Structure::class)
+			->setArguments([$connection])
+			->setAutowired($config['autowired']);
 
-        } else {
-            $class = method_exists(Nette\DI\Helpers::class, 'filterArguments') ? Nette\DI\Helpers::class : Nette\DI\Compiler::class;
-            $conventions = $class::filterArguments([$config['conventions']])[0];
-        }
+		if (!empty($config['reflection'])) {
+			$conventionsServiceName = 'reflection';
+			$config['conventions'] = $config['reflection'];
+			if (is_string($config['conventions']) && strtolower($config['conventions']) === 'conventional') {
+				$config['conventions'] = 'Static';
+			}
+		} else {
+			$conventionsServiceName = 'conventions';
+		}
 
-        $builder->addDefinition($this->prefix("$name.context"))
-            ->setClass(Nette\Database\Context::class, [$connection, $structure, $conventions])
-            ->setAutowired($config['autowired']);
+		if (!$config['conventions']) {
+			$conventions = null;
 
-        if ($config['debugger']) {
-            $connection->addSetup('@Tracy\BlueScreen::addPanel', [
-                'Nette\Bridges\DatabaseTracy\ConnectionPanel::renderException',
-            ]);
-            if ($this->debugMode) {
-                $connection->addSetup('Nette\Database\Helpers::createDebugPanel', [$connection, !empty($config['explain']), $name]);
-            }
-        }
+		} elseif (is_string($config['conventions'])) {
+			$conventions = $builder->addDefinition($this->prefix("$name.$conventionsServiceName"))
+				->setClass(preg_match('#^[a-z]+\z#i', $config['conventions'])
+					? 'Nette\Database\Conventions\\' . ucfirst($config['conventions']) . 'Conventions'
+					: $config['conventions'])
+				->setArguments(strtolower($config['conventions']) === 'discovered' ? [$structure] : [])
+				->setAutowired($config['autowired']);
 
-        if ($this->name === 'database') {
-            $builder->addAlias($this->prefix($name), $this->prefix("$name.connection"));
-            $builder->addAlias("nette.database.$name", $this->prefix($name));
-            $builder->addAlias("nette.database.$name.context", $this->prefix("$name.context"));
-        }
-    }
+		} else {
+			$class = method_exists(Nette\DI\Helpers::class, 'filterArguments') ? Nette\DI\Helpers::class : Nette\DI\Compiler::class;
+			$conventions = $class::filterArguments([$config['conventions']])[0];
+		}
+
+		$builder->addDefinition($this->prefix("$name.context"))
+			->setClass(Nette\Database\Context::class, [$connection, $structure, $conventions])
+			->setAutowired($config['autowired']);
+
+		if ($config['debugger']) {
+			$connection->addSetup('@Tracy\BlueScreen::addPanel', [
+				'Nette\Bridges\DatabaseTracy\ConnectionPanel::renderException',
+			]);
+			if ($this->debugMode) {
+				$connection->addSetup('Nette\Database\Helpers::createDebugPanel', [$connection, !empty($config['explain']), $name]);
+			}
+		}
+
+		if ($this->name === 'database') {
+			$builder->addAlias($this->prefix($name), $this->prefix("$name.connection"));
+			$builder->addAlias("nette.database.$name", $this->prefix($name));
+			$builder->addAlias("nette.database.$name.context", $this->prefix("$name.context"));
+		}
+	}
 }

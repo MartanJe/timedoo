@@ -13,31 +13,31 @@ namespace Nette\Neon;
  */
 class Neon
 {
-    const BLOCK = Encoder::BLOCK;
-    const CHAIN = '!!chain';
+	const BLOCK = Encoder::BLOCK;
+	const CHAIN = '!!chain';
 
 
-    /**
-     * Returns the NEON representation of a value.
-     * @param  mixed
-     * @param  int
-     * @return string
-     */
-    public static function encode($var, $options = null)
-    {
-        $encoder = new Encoder;
-        return $encoder->encode($var, $options);
-    }
+	/**
+	 * Returns the NEON representation of a value.
+	 * @param  mixed
+	 * @param  int
+	 * @return string
+	 */
+	public static function encode($var, $options = null)
+	{
+		$encoder = new Encoder;
+		return $encoder->encode($var, $options);
+	}
 
 
-    /**
-     * Decodes a NEON string.
-     * @param  string
-     * @return mixed
-     */
-    public static function decode($input)
-    {
-        $decoder = new Decoder;
-        return $decoder->decode($input);
-    }
+	/**
+	 * Decodes a NEON string.
+	 * @param  string
+	 * @return mixed
+	 */
+	public static function decode($input)
+	{
+		$decoder = new Decoder;
+		return $decoder->decode($input);
+	}
 }

@@ -11,29 +11,29 @@ namespace Tester\Runner;
 interface PhpInterpreter
 {
 
-    /**
-     * @return string
-     */
-    function getCommandLine();
+	/**
+	 * @return string
+	 */
+	function getCommandLine();
 
-    /**
-     * @return string
-     */
-    function getVersion();
+	/**
+	 * @return string
+	 */
+	function getVersion();
 
-    /**
-     * @return bool
-     */
-    function hasXdebug();
+	/**
+	 * @return bool
+	 */
+	function hasXdebug();
 
-    /**
-     * @return bool
-     */
-    function isCgi();
+	/**
+	 * @return bool
+	 */
+	function isCgi();
 
-    /**
-     * @return string
-     */
-    function getErrorOutput();
+	/**
+	 * @return string
+	 */
+	function getErrorOutput();
 
 }

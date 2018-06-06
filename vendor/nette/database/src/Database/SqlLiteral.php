@@ -15,36 +15,36 @@ use Nette;
  */
 class SqlLiteral
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    /** @var string */
-    private $value;
+	/** @var string */
+	private $value;
 
-    /** @var array */
-    private $parameters;
-
-
-    public function __construct($value, array $parameters = [])
-    {
-        $this->value = (string)$value;
-        $this->parameters = $parameters;
-    }
+	/** @var array */
+	private $parameters;
 
 
-    /**
-     * @return array
-     */
-    public function getParameters()
-    {
-        return $this->parameters;
-    }
+	public function __construct($value, array $parameters = [])
+	{
+		$this->value = (string) $value;
+		$this->parameters = $parameters;
+	}
 
 
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->value;
-    }
+	/**
+	 * @return array
+	 */
+	public function getParameters()
+	{
+		return $this->parameters;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->value;
+	}
 }

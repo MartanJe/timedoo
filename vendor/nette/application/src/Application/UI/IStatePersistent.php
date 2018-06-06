@@ -14,15 +14,15 @@ namespace Nette\Application\UI;
 interface IStatePersistent
 {
 
-    /**
-     * Loads state informations.
-     * @return void
-     */
-    function loadState(array $params);
+	/**
+	 * Loads state informations.
+	 * @return void
+	 */
+	function loadState(array $params);
 
-    /**
-     * Saves state informations for next request.
-     * @return void
-     */
-    function saveState(array &$params);
+	/**
+	 * Saves state informations for next request.
+	 * @return void
+	 */
+	function saveState(array &$params);
 }

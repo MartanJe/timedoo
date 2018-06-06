@@ -15,34 +15,36 @@ use Nette;
  */
 trait NameAware
 {
-    /** @var string */
-    private $name;
+	/** @var string */
+	private $name;
 
 
-    /**
-     * @param  string
-     */
-    public function __construct($name)
-    {
-        if (!Nette\PhpGenerator\Helpers::isIdentifier($name)) {
-            throw new Nette\InvalidArgumentException("Value '$name' is not valid name.");
-        }
-        $this->name = $name;
-    }
+	/**
+	 * @param  string
+	 */
+	public function __construct($name)
+	{
+		if (!Nette\PhpGenerator\Helpers::isIdentifier($name)) {
+			throw new Nette\InvalidArgumentException("Value '$name' is not valid name.");
+		}
+		$this->name = $name;
+	}
 
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
 
-    /** @deprecated */
-    public function setName($name)
-    {
-        trigger_error(__METHOD__ . '() is deprecated, use constructor.', E_USER_DEPRECATED);
-        $this->__construct($name);
-        return $this;
-    }
+	/** @deprecated */
+	public function setName($name)
+	{
+		trigger_error(__METHOD__ . '() is deprecated, use constructor.', E_USER_DEPRECATED);
+		$this->__construct($name);
+		return $this;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
 }

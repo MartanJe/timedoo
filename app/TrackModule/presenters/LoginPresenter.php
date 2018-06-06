@@ -5,16 +5,16 @@ namespace App\TrackModule\Presenters;
 
 use App\Model\UserManager;
 use Nette\Application\UI\Form;
-use Nette\Application\UI\Presenter;
-use Nette\Security\AuthenticationException;
+use  Nette\Application\UI\Presenter;
 use Nette\Security\User;
+use Nette\Security\AuthenticationException;
 
 /**
  * Handles user login and registration
  * Class LoginPresenter
  * @package App\TrackModule\Presenters
  */
-class LoginPresenter extends Presenter
+class LoginPresenter extends  Presenter
 {
     private $m_userManager;
     private $m_user;
@@ -61,21 +61,27 @@ class LoginPresenter extends Presenter
     public function registerFormSucceeded($form)
     {
 
-        try {
+        try
+        {
             // Extrakce hodnot z formuláře.
             $username = $form->getValues()->username;
             $password = $form->getValues()->password;
             $password2 = $form->getValues()->password2;
 
-            if ($password != $password2) {
+            if($password != $password2)
+            {
                 $this->flashMessage('Password dont match!', 'danger');
-            } else {
+            }
+            else
+            {
                 $this->user->getAuthenticator()->register($username, $password);
 
-                $this->flashMessage('Registration successful.', 'success');
+                $this->flashMessage('Registration successful.','success');
                 $this->redirect(':Track:Login:');
             }
-        } catch (AuthenticationException $ex) {
+        }
+        catch (AuthenticationException $ex)
+        {
             $this->flashMessage($ex->getMessage(), 'danger');
         }
 
@@ -88,15 +94,19 @@ class LoginPresenter extends Presenter
      */
     public function loginFormSucceeded($form)
     {
-        try {
+        try
+        {
             // Extrakce hodnot z formuláře.
             $username = $form->getValues()->username;
             $password = $form->getValues()->password;
 
             $this->user->login($username, $password);
             $this->redirect(':Track:Timer:');
-        } catch (AuthenticationException $ex) {
-            $this->flashMessage($ex->getMessage(), 'danger');
+        }
+
+        catch (AuthenticationException $ex)
+        {
+                $this->flashMessage($ex->getMessage(),'danger');
         }
 
     }
@@ -105,7 +115,7 @@ class LoginPresenter extends Presenter
     public function actionLogout()
     {
         $this->getUser()->logout();
-        $this->flashMessage('Logout successful.', 'success');
+        $this->flashMessage('Logout successful.','success');
         $this->redirect(':Track:Login:');
     }
 
@@ -118,6 +128,7 @@ class LoginPresenter extends Presenter
     {
         if ($this->getUser()->isLoggedIn()) $this->redirect(':Track:Timer:');
     }
+
 
 
 }

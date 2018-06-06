@@ -13,8 +13,8 @@ use Latte;
 interface ILatteFactory
 {
 
-    /**
-     * @return Latte\Engine
-     */
-    function create();
+	/**
+	 * @return Latte\Engine
+	 */
+	function create();
 }

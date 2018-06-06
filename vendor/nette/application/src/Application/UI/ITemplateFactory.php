@@ -14,8 +14,8 @@ namespace Nette\Application\UI;
 interface ITemplateFactory
 {
 
-    /**
-     * @return ITemplate
-     */
-    function createTemplate(Control $control = null);
+	/**
+	 * @return ITemplate
+	 */
+	function createTemplate(Control $control = null);
 }

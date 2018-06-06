@@ -15,36 +15,36 @@ use Nette;
  */
 class OutputHelper
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    /** @var array */
-    public $dependencies;
+	/** @var array */
+	public $dependencies;
 
-    /** @var Cache */
-    private $cache;
+	/** @var Cache */
+	private $cache;
 
-    /** @var string */
-    private $key;
-
-
-    public function __construct(Cache $cache, $key)
-    {
-        $this->cache = $cache;
-        $this->key = $key;
-        ob_start();
-    }
+	/** @var string */
+	private $key;
 
 
-    /**
-     * Stops and saves the cache.
-     * @return void
-     */
-    public function end(array $dependencies = null)
-    {
-        if ($this->cache === null) {
-            throw new Nette\InvalidStateException('Output cache has already been saved.');
-        }
-        $this->cache->save($this->key, ob_get_flush(), (array)$dependencies + (array)$this->dependencies);
-        $this->cache = null;
-    }
+	public function __construct(Cache $cache, $key)
+	{
+		$this->cache = $cache;
+		$this->key = $key;
+		ob_start();
+	}
+
+
+	/**
+	 * Stops and saves the cache.
+	 * @return void
+	 */
+	public function end(array $dependencies = null)
+	{
+		if ($this->cache === null) {
+			throw new Nette\InvalidStateException('Output cache has already been saved.');
+		}
+		$this->cache->save($this->key, ob_get_flush(), (array) $dependencies + (array) $this->dependencies);
+		$this->cache = null;
+	}
 }

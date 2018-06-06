@@ -16,9 +16,9 @@ use Nette;
 interface IResponse
 {
 
-    /**
-     * Sends response to output.
-     * @return void
-     */
-    function send(Nette\Http\IRequest $httpRequest, Nette\Http\IResponse $httpResponse);
+	/**
+	 * Sends response to output.
+	 * @return void
+	 */
+	function send(Nette\Http\IRequest $httpRequest, Nette\Http\IResponse $httpResponse);
 }

@@ -38,15 +38,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr n:foreach="$datas3 as $data" data-id="{$data['rootNum']}" data-parent="{$data['parentNum']}"
-                                                 class="{if $data['parentNum'] != ''} gray {/if}">
+                <tr n:foreach="$datas3 as $data" data-id="{$data['rootNum']}" data-parent="{$data['parentNum']}" class="{if $data['parentNum'] != ''} gray {/if}">
                     <td>{$data['nameTask']}</td>
                     <td>{$data['nameProject']}</td>
-                    <td>{if $data['statusH'] < 10 }0{/if}{$data['statusH']}
-                        :{if $data['statusM'] < 10 }0{/if}{$data['statusM']}
-                        :{if $data['statusS'] < 10 }0{/if}{$data['statusS']}</td>
-                    {if $data['parentNum'] != ''}
-                        <td> {$data['dateStart']} </td> {/if}
+                    <td>{if $data['statusH'] < 10 }0{/if}{$data['statusH']}:{if $data['statusM'] < 10 }0{/if}{$data['statusM']}:{if $data['statusS'] < 10 }0{/if}{$data['statusS']}</td>
+                    {if $data['parentNum'] != ''} <td> {$data['dateStart']} </td> {/if}
                 </tr>
                 </tbody>
             </table>

@@ -28,66 +28,69 @@ use Nette;
  */
 class Property extends \ReflectionProperty
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    public function __toString()
-    {
-        return parent::getDeclaringClass()->getName() . '::$' . $this->getName();
-    }
-
-
-    /********************* Reflection layer ****************d*g**/
+	public function __toString()
+	{
+		return parent::getDeclaringClass()->getName() . '::$' . $this->getName();
+	}
 
 
-    /**
-     * @return ClassType
-     */
-    public function getDeclaringClass()
-    {
-        return new ClassType(parent::getDeclaringClass()->getName());
-    }
+	/********************* Reflection layer ****************d*g**/
 
 
-    /********************* Nette\Annotations support ****************d*g**/
+	/**
+	 * @return ClassType
+	 */
+	public function getDeclaringClass()
+	{
+		return new ClassType(parent::getDeclaringClass()->getName());
+	}
 
 
-    /**
-     * Has property specified annotation?
-     * @param  string
-     * @return bool
-     */
-    public function hasAnnotation($name)
-    {
-        $res = AnnotationsParser::getAll($this);
-        return !empty($res[$name]);
-    }
+	/********************* Nette\Annotations support ****************d*g**/
 
-    /**
-     * Returns all annotations.
-     * @return IAnnotation[][]
-     */
-    public function getAnnotations()
-    {
-        return AnnotationsParser::getAll($this);
-    }
 
-    /**
-     * Returns value of annotation 'description'.
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->getAnnotation('description');
-    }
+	/**
+	 * Has property specified annotation?
+	 * @param  string
+	 * @return bool
+	 */
+	public function hasAnnotation($name)
+	{
+		$res = AnnotationsParser::getAll($this);
+		return !empty($res[$name]);
+	}
 
-    /**
-     * Returns an annotation value.
-     * @param  string
-     * @return IAnnotation
-     */
-    public function getAnnotation($name)
-    {
-        $res = AnnotationsParser::getAll($this);
-        return isset($res[$name]) ? end($res[$name]) : null;
-    }
+
+	/**
+	 * Returns an annotation value.
+	 * @param  string
+	 * @return IAnnotation
+	 */
+	public function getAnnotation($name)
+	{
+		$res = AnnotationsParser::getAll($this);
+		return isset($res[$name]) ? end($res[$name]) : null;
+	}
+
+
+	/**
+	 * Returns all annotations.
+	 * @return IAnnotation[][]
+	 */
+	public function getAnnotations()
+	{
+		return AnnotationsParser::getAll($this);
+	}
+
+
+	/**
+	 * Returns value of annotation 'description'.
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return $this->getAnnotation('description');
+	}
 }

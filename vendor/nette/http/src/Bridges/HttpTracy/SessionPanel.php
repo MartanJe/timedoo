@@ -16,30 +16,28 @@ use Tracy;
  */
 class SessionPanel implements Tracy\IBarPanel
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    /**
-     * Renders tab.
-     * @return string
-     */
-    public function getTab()
-    {
-        ob_start(function () {
-        });
-        require __DIR__ . '/templates/SessionPanel.tab.phtml';
-        return ob_get_clean();
-    }
+	/**
+	 * Renders tab.
+	 * @return string
+	 */
+	public function getTab()
+	{
+		ob_start(function () {});
+		require __DIR__ . '/templates/SessionPanel.tab.phtml';
+		return ob_get_clean();
+	}
 
 
-    /**
-     * Renders panel.
-     * @return string
-     */
-    public function getPanel()
-    {
-        ob_start(function () {
-        });
-        require __DIR__ . '/templates/SessionPanel.panel.phtml';
-        return ob_get_clean();
-    }
+	/**
+	 * Renders panel.
+	 * @return string
+	 */
+	public function getPanel()
+	{
+		ob_start(function () {});
+		require __DIR__ . '/templates/SessionPanel.panel.phtml';
+		return ob_get_clean();
+	}
 }

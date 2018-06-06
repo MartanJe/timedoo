@@ -34,97 +34,100 @@ use Nette;
  */
 class GlobalFunction extends \ReflectionFunction
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    /** @var string|\Closure */
-    private $value;
-
-
-    public function __construct($name)
-    {
-        parent::__construct($this->value = $name);
-    }
+	/** @var string|\Closure */
+	private $value;
 
 
-    /**
-     * @deprecated
-     */
-    public function toCallback()
-    {
-        return new Nette\Callback($this->value);
-    }
+	public function __construct($name)
+	{
+		parent::__construct($this->value = $name);
+	}
 
 
-    public function __toString()
-    {
-        return $this->getName() . '()';
-    }
+	/**
+	 * @deprecated
+	 */
+	public function toCallback()
+	{
+		return new Nette\Callback($this->value);
+	}
 
 
-    /********************* Reflection layer ****************d*g**/
+	public function __toString()
+	{
+		return $this->getName() . '()';
+	}
 
 
-    /**
-     * @return Extension
-     */
-    public function getExtension()
-    {
-        return ($name = $this->getExtensionName()) ? new Extension($name) : null;
-    }
+	/********************* Reflection layer ****************d*g**/
 
 
-    /**
-     * @return Parameter[]
-     */
-    public function getParameters()
-    {
-        foreach ($res = parent::getParameters() as $key => $val) {
-            $res[$key] = new Parameter($this->value, $val->getName());
-        }
-        return $res;
-    }
+	/**
+	 * @return Extension
+	 */
+	public function getExtension()
+	{
+		return ($name = $this->getExtensionName()) ? new Extension($name) : null;
+	}
 
 
-    /********************* Nette\Annotations support ****************d*g**/
+	/**
+	 * @return Parameter[]
+	 */
+	public function getParameters()
+	{
+		foreach ($res = parent::getParameters() as $key => $val) {
+			$res[$key] = new Parameter($this->value, $val->getName());
+		}
+		return $res;
+	}
 
 
-    /**
-     * Has method specified annotation?
-     * @param  string
-     * @return bool
-     */
-    public function hasAnnotation($name)
-    {
-        $res = AnnotationsParser::getAll($this);
-        return !empty($res[$name]);
-    }
+	/********************* Nette\Annotations support ****************d*g**/
 
-    /**
-     * Returns all annotations.
-     * @return IAnnotation[][]
-     */
-    public function getAnnotations()
-    {
-        return AnnotationsParser::getAll($this);
-    }
 
-    /**
-     * Returns value of annotation 'description'.
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->getAnnotation('description');
-    }
+	/**
+	 * Has method specified annotation?
+	 * @param  string
+	 * @return bool
+	 */
+	public function hasAnnotation($name)
+	{
+		$res = AnnotationsParser::getAll($this);
+		return !empty($res[$name]);
+	}
 
-    /**
-     * Returns an annotation value.
-     * @param  string
-     * @return IAnnotation
-     */
-    public function getAnnotation($name)
-    {
-        $res = AnnotationsParser::getAll($this);
-        return isset($res[$name]) ? end($res[$name]) : null;
-    }
+
+	/**
+	 * Returns an annotation value.
+	 * @param  string
+	 * @return IAnnotation
+	 */
+	public function getAnnotation($name)
+	{
+		$res = AnnotationsParser::getAll($this);
+		return isset($res[$name]) ? end($res[$name]) : null;
+	}
+
+
+	/**
+	 * Returns all annotations.
+	 * @return IAnnotation[][]
+	 */
+	public function getAnnotations()
+	{
+		return AnnotationsParser::getAll($this);
+	}
+
+
+	/**
+	 * Returns value of annotation 'description'.
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return $this->getAnnotation('description');
+	}
 }

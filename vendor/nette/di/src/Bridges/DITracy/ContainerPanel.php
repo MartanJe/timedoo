@@ -17,71 +17,69 @@ use Tracy;
  */
 class ContainerPanel implements Tracy\IBarPanel
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    /** @var int */
-    public static $compilationTime;
+	/** @var int */
+	public static $compilationTime;
 
-    /** @var Nette\DI\Container */
-    private $container;
+	/** @var Nette\DI\Container */
+	private $container;
 
-    /** @var int|null */
-    private $elapsedTime;
-
-
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
-        $this->elapsedTime = self::$compilationTime ? microtime(true) - self::$compilationTime : null;
-    }
+	/** @var int|null */
+	private $elapsedTime;
 
 
-    /**
-     * Renders tab.
-     * @return string
-     */
-    public function getTab()
-    {
-        ob_start(function () {
-        });
-        $elapsedTime = $this->elapsedTime;
-        require __DIR__ . '/templates/ContainerPanel.tab.phtml';
-        return ob_get_clean();
-    }
+	public function __construct(Container $container)
+	{
+		$this->container = $container;
+		$this->elapsedTime = self::$compilationTime ? microtime(true) - self::$compilationTime : null;
+	}
 
 
-    /**
-     * Renders panel.
-     * @return string
-     */
-    public function getPanel()
-    {
-        $container = $this->container;
-        $registry = $this->getContainerProperty('registry');
-        $file = (new \ReflectionClass($container))->getFileName();
-        $tags = [];
-        $meta = $this->getContainerProperty('meta');
-        $services = $meta[Container::SERVICES];
-        ksort($services);
-        if (isset($meta[Container::TAGS])) {
-            foreach ($meta[Container::TAGS] as $tag => $tmp) {
-                foreach ($tmp as $service => $val) {
-                    $tags[$service][$tag] = $val;
-                }
-            }
-        }
-
-        ob_start(function () {
-        });
-        require __DIR__ . '/templates/ContainerPanel.panel.phtml';
-        return ob_get_clean();
-    }
+	/**
+	 * Renders tab.
+	 * @return string
+	 */
+	public function getTab()
+	{
+		ob_start(function () {});
+		$elapsedTime = $this->elapsedTime;
+		require __DIR__ . '/templates/ContainerPanel.tab.phtml';
+		return ob_get_clean();
+	}
 
 
-    private function getContainerProperty($name)
-    {
-        $prop = (new \ReflectionClass(Nette\DI\Container::class))->getProperty($name);
-        $prop->setAccessible(true);
-        return $prop->getValue($this->container);
-    }
+	/**
+	 * Renders panel.
+	 * @return string
+	 */
+	public function getPanel()
+	{
+		$container = $this->container;
+		$registry = $this->getContainerProperty('registry');
+		$file = (new \ReflectionClass($container))->getFileName();
+		$tags = [];
+		$meta = $this->getContainerProperty('meta');
+		$services = $meta[Container::SERVICES];
+		ksort($services);
+		if (isset($meta[Container::TAGS])) {
+			foreach ($meta[Container::TAGS] as $tag => $tmp) {
+				foreach ($tmp as $service => $val) {
+					$tags[$service][$tag] = $val;
+				}
+			}
+		}
+
+		ob_start(function () {});
+		require __DIR__ . '/templates/ContainerPanel.panel.phtml';
+		return ob_get_clean();
+	}
+
+
+	private function getContainerProperty($name)
+	{
+		$prop = (new \ReflectionClass(Nette\DI\Container::class))->getProperty($name);
+		$prop->setAccessible(true);
+		return $prop->getValue($this->container);
+	}
 }

@@ -14,9 +14,9 @@ namespace Nette\Forms;
 interface IFormRenderer
 {
 
-    /**
-     * Provides complete form rendering.
-     * @return string
-     */
-    function render(Form $form);
+	/**
+	 * Provides complete form rendering.
+	 * @return string
+	 */
+	function render(Form $form);
 }

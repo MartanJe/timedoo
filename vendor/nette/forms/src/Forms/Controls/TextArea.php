@@ -16,24 +16,24 @@ use Nette;
 class TextArea extends TextBase
 {
 
-    /**
-     * @param  string|object
-     */
-    public function __construct($label = null)
-    {
-        parent::__construct($label);
-        $this->control->setName('textarea');
-        $this->setOption('type', 'textarea');
-    }
+	/**
+	 * @param  string|object
+	 */
+	public function __construct($label = null)
+	{
+		parent::__construct($label);
+		$this->control->setName('textarea');
+		$this->setOption('type', 'textarea');
+	}
 
 
-    /**
-     * Generates control's HTML element.
-     * @return Nette\Utils\Html
-     */
-    public function getControl()
-    {
-        return parent::getControl()
-            ->setText($this->getRenderedValue());
-    }
+	/**
+	 * Generates control's HTML element.
+	 * @return Nette\Utils\Html
+	 */
+	public function getControl()
+	{
+		return parent::getControl()
+			->setText($this->getRenderedValue());
+	}
 }

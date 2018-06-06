@@ -15,22 +15,22 @@ use Nette;
  */
 class Annotation implements IAnnotation
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    public function __construct(array $values)
-    {
-        foreach ($values as $k => $v) {
-            $this->$k = $v;
-        }
-    }
+	public function __construct(array $values)
+	{
+		foreach ($values as $k => $v) {
+			$this->$k = $v;
+		}
+	}
 
 
-    /**
-     * Returns default annotation.
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->value;
-    }
+	/**
+	 * Returns default annotation.
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->value;
+	}
 }

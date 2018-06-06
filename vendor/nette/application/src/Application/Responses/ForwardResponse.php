@@ -15,32 +15,32 @@ use Nette;
  */
 class ForwardResponse implements Nette\Application\IResponse
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    /** @var Nette\Application\Request */
-    private $request;
-
-
-    public function __construct(Nette\Application\Request $request)
-    {
-        $this->request = $request;
-    }
+	/** @var Nette\Application\Request */
+	private $request;
 
 
-    /**
-     * @return Nette\Application\Request
-     */
-    public function getRequest()
-    {
-        return $this->request;
-    }
+	public function __construct(Nette\Application\Request $request)
+	{
+		$this->request = $request;
+	}
 
 
-    /**
-     * Sends response to output.
-     * @return void
-     */
-    public function send(Nette\Http\IRequest $httpRequest, Nette\Http\IResponse $httpResponse)
-    {
-    }
+	/**
+	 * @return Nette\Application\Request
+	 */
+	public function getRequest()
+	{
+		return $this->request;
+	}
+
+
+	/**
+	 * Sends response to output.
+	 * @return void
+	 */
+	public function send(Nette\Http\IRequest $httpRequest, Nette\Http\IResponse $httpResponse)
+	{
+	}
 }

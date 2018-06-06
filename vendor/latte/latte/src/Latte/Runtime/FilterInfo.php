@@ -15,14 +15,14 @@ use Latte;
  */
 class FilterInfo
 {
-    use Latte\Strict;
+	use Latte\Strict;
 
-    /** @var string|null */
-    public $contentType;
+	/** @var string|null */
+	public $contentType;
 
 
-    public function __construct($contentType = null)
-    {
-        $this->contentType = $contentType;
-    }
+	public function __construct($contentType = null)
+	{
+		$this->contentType = $contentType;
+	}
 }

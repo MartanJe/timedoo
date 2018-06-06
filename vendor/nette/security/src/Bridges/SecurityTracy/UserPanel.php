@@ -16,46 +16,44 @@ use Tracy;
  */
 class UserPanel implements Tracy\IBarPanel
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    /** @var Nette\Security\User */
-    private $user;
-
-
-    public function __construct(Nette\Security\User $user)
-    {
-        $this->user = $user;
-    }
+	/** @var Nette\Security\User */
+	private $user;
 
 
-    /**
-     * Renders tab.
-     * @return string
-     */
-    public function getTab()
-    {
-        if (headers_sent() && !session_id()) {
-            return;
-        }
-
-        ob_start(function () {
-        });
-        $user = $this->user;
-        require __DIR__ . '/templates/UserPanel.tab.phtml';
-        return ob_get_clean();
-    }
+	public function __construct(Nette\Security\User $user)
+	{
+		$this->user = $user;
+	}
 
 
-    /**
-     * Renders panel.
-     * @return string
-     */
-    public function getPanel()
-    {
-        ob_start(function () {
-        });
-        $user = $this->user;
-        require __DIR__ . '/templates/UserPanel.panel.phtml';
-        return ob_get_clean();
-    }
+	/**
+	 * Renders tab.
+	 * @return string
+	 */
+	public function getTab()
+	{
+		if (headers_sent() && !session_id()) {
+			return;
+		}
+
+		ob_start(function () {});
+		$user = $this->user;
+		require __DIR__ . '/templates/UserPanel.tab.phtml';
+		return ob_get_clean();
+	}
+
+
+	/**
+	 * Renders panel.
+	 * @return string
+	 */
+	public function getPanel()
+	{
+		ob_start(function () {});
+		$user = $this->user;
+		require __DIR__ . '/templates/UserPanel.panel.phtml';
+		return ob_get_clean();
+	}
 }

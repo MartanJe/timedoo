@@ -51,105 +51,109 @@ use Nette;
 abstract class Object
 {
 
-    /**
-     * Access to reflection.
-     * @return Nette\Reflection\ClassType|\ReflectionClass
-     */
-    public static function getReflection()
-    {
-        $class = class_exists(Nette\Reflection\ClassType::class) ? Nette\Reflection\ClassType::class : 'ReflectionClass';
-        return new $class(get_called_class());
-    }
-
-    /**
-     * Call to undefined static method.
-     * @param  string  method name (in lower case!)
-     * @param  array   arguments
-     * @return mixed
-     * @throws MemberAccessException
-     */
-    public static function __callStatic($name, $args)
-    {
-        return Nette\Utils\ObjectMixin::callStatic(get_called_class(), $name, $args);
-    }
-
-    /**
-     * Adding method to class.
-     * @param  string  method name
-     * @param  callable
-     * @return mixed
-     */
-    public static function extensionMethod($name, $callback = null)
-    {
-        if (strpos($name, '::') === false) {
-            $class = get_called_class();
-        } else {
-            list($class, $name) = explode('::', $name);
-            $class = (new \ReflectionClass($class))->getName();
-        }
-        if ($callback === null) {
-            return Nette\Utils\ObjectMixin::getExtensionMethod($class, $name);
-        } else {
-            Nette\Utils\ObjectMixin::setExtensionMethod($class, $name, $callback);
-        }
-    }
-
-    /**
-     * Call to undefined method.
-     * @param  string  method name
-     * @param  array   arguments
-     * @return mixed
-     * @throws MemberAccessException
-     */
-    public function __call($name, $args)
-    {
-        return Nette\Utils\ObjectMixin::call($this, $name, $args);
-    }
-
-    /**
-     * Returns property value. Do not call directly.
-     * @param  string  property name
-     * @return mixed   property value
-     * @throws MemberAccessException if the property is not defined.
-     */
-    public function &__get($name)
-    {
-        return Nette\Utils\ObjectMixin::get($this, $name);
-    }
+	/**
+	 * Access to reflection.
+	 * @return Nette\Reflection\ClassType|\ReflectionClass
+	 */
+	public static function getReflection()
+	{
+		$class = class_exists(Nette\Reflection\ClassType::class) ? Nette\Reflection\ClassType::class : 'ReflectionClass';
+		return new $class(get_called_class());
+	}
 
 
-    /**
-     * Sets value of a property. Do not call directly.
-     * @param  string  property name
-     * @param  mixed   property value
-     * @return void
-     * @throws MemberAccessException if the property is not defined or is read-only
-     */
-    public function __set($name, $value)
-    {
-        Nette\Utils\ObjectMixin::set($this, $name, $value);
-    }
+	/**
+	 * Call to undefined method.
+	 * @param  string  method name
+	 * @param  array   arguments
+	 * @return mixed
+	 * @throws MemberAccessException
+	 */
+	public function __call($name, $args)
+	{
+		return Nette\Utils\ObjectMixin::call($this, $name, $args);
+	}
 
 
-    /**
-     * Is property defined?
-     * @param  string  property name
-     * @return bool
-     */
-    public function __isset($name)
-    {
-        return Nette\Utils\ObjectMixin::has($this, $name);
-    }
+	/**
+	 * Call to undefined static method.
+	 * @param  string  method name (in lower case!)
+	 * @param  array   arguments
+	 * @return mixed
+	 * @throws MemberAccessException
+	 */
+	public static function __callStatic($name, $args)
+	{
+		return Nette\Utils\ObjectMixin::callStatic(get_called_class(), $name, $args);
+	}
 
 
-    /**
-     * Access to undeclared property.
-     * @param  string  property name
-     * @return void
-     * @throws MemberAccessException
-     */
-    public function __unset($name)
-    {
-        Nette\Utils\ObjectMixin::remove($this, $name);
-    }
+	/**
+	 * Adding method to class.
+	 * @param  string  method name
+	 * @param  callable
+	 * @return mixed
+	 */
+	public static function extensionMethod($name, $callback = null)
+	{
+		if (strpos($name, '::') === false) {
+			$class = get_called_class();
+		} else {
+			list($class, $name) = explode('::', $name);
+			$class = (new \ReflectionClass($class))->getName();
+		}
+		if ($callback === null) {
+			return Nette\Utils\ObjectMixin::getExtensionMethod($class, $name);
+		} else {
+			Nette\Utils\ObjectMixin::setExtensionMethod($class, $name, $callback);
+		}
+	}
+
+
+	/**
+	 * Returns property value. Do not call directly.
+	 * @param  string  property name
+	 * @return mixed   property value
+	 * @throws MemberAccessException if the property is not defined.
+	 */
+	public function &__get($name)
+	{
+		return Nette\Utils\ObjectMixin::get($this, $name);
+	}
+
+
+	/**
+	 * Sets value of a property. Do not call directly.
+	 * @param  string  property name
+	 * @param  mixed   property value
+	 * @return void
+	 * @throws MemberAccessException if the property is not defined or is read-only
+	 */
+	public function __set($name, $value)
+	{
+		Nette\Utils\ObjectMixin::set($this, $name, $value);
+	}
+
+
+	/**
+	 * Is property defined?
+	 * @param  string  property name
+	 * @return bool
+	 */
+	public function __isset($name)
+	{
+		return Nette\Utils\ObjectMixin::has($this, $name);
+	}
+
+
+	/**
+	 * Access to undeclared property.
+	 * @param  string  property name
+	 * @return void
+	 * @throws MemberAccessException
+	 */
+	public function __unset($name)
+	{
+		Nette\Utils\ObjectMixin::remove($this, $name);
+	}
 }

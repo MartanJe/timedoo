@@ -36,12 +36,9 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr n:foreach="$datas as $data" data-id="{$data['rootNum']}" data-parent="{$data['parentNum']}"
-                                                class="{if $data['parentNum'] != ''} gray {/if}">
+                <tr n:foreach="$datas as $data" data-id="{$data['rootNum']}" data-parent="{$data['parentNum']}" class="{if $data['parentNum'] != ''} gray {/if}">
                     <td>{$data['name']}</td>
-                    <td>{if $data['statusH'] < 10 }0{/if}{$data['statusH']}
-                        :{if $data['statusM'] < 10 }0{/if}{$data['statusM']}
-                        :{if $data['statusS'] < 10 }0{/if}{$data['statusS']}</td>
+                    <td>{if $data['statusH'] < 10 }0{/if}{$data['statusH']}:{if $data['statusM'] < 10 }0{/if}{$data['statusM']}:{if $data['statusS'] < 10 }0{/if}{$data['statusS']}</td>
                 </tr>
                 </tbody>
             </table>
@@ -55,12 +52,9 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr n:foreach="$datas2 as $data" data-id="{$data['rootNum']}" data-parent="{$data['parentNum']}"
-                                                 class="{if $data['parentNum'] != ''} gray {/if}">
+                <tr n:foreach="$datas2 as $data" data-id="{$data['rootNum']}" data-parent="{$data['parentNum']}" class="{if $data['parentNum'] != ''} gray {/if}">
                     <td>{$data['name']}</td>
-                    <td>{if $data['statusH'] < 10 }0{/if}{$data['statusH']}
-                        :{if $data['statusM'] < 10 }0{/if}{$data['statusM']}
-                        :{if $data['statusS'] < 10 }0{/if}{$data['statusS']}</td>
+                    <td>{if $data['statusH'] < 10 }0{/if}{$data['statusH']}:{if $data['statusM'] < 10 }0{/if}{$data['statusM']}:{if $data['statusS'] < 10 }0{/if}{$data['statusS']}</td>
                 </tr>
                 </tbody>
             </table>

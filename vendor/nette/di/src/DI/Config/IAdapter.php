@@ -14,16 +14,16 @@ namespace Nette\DI\Config;
 interface IAdapter
 {
 
-    /**
-     * Reads configuration from file.
-     * @param  string  file name
-     * @return array
-     */
-    function load($file);
+	/**
+	 * Reads configuration from file.
+	 * @param  string  file name
+	 * @return array
+	 */
+	function load($file);
 
-    /**
-     * Generates configuration string.
-     * @return string
-     */
-    function dump(array $data);
+	/**
+	 * Generates configuration string.
+	 * @return string
+	 */
+	function dump(array $data);
 }

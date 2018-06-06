@@ -13,46 +13,46 @@ namespace Latte;
  */
 class HtmlNode
 {
-    use Strict;
+	use Strict;
 
-    /** @var string */
-    public $name;
+	/** @var string */
+	public $name;
 
-    /** @var bool */
-    public $empty;
+	/** @var bool */
+	public $empty;
 
-    /** @deprecated */
-    public $isEmpty;
+	/** @deprecated */
+	public $isEmpty;
 
-    /** @var array */
-    public $attrs = [];
+	/** @var array */
+	public $attrs = [];
 
-    /** @var array */
-    public $macroAttrs = [];
+	/** @var array */
+	public $macroAttrs = [];
 
-    /** @var bool */
-    public $closing = false;
+	/** @var bool */
+	public $closing = false;
 
-    /** @var HtmlNode */
-    public $parentNode;
+	/** @var HtmlNode */
+	public $parentNode;
 
-    /** @var string */
-    public $attrCode;
+	/** @var string */
+	public $attrCode;
 
-    /** @var int  position of start tag in source template */
-    public $startLine;
+	/** @var int  position of start tag in source template */
+	public $startLine;
 
-    /** @var int  position of end tag in source template */
-    public $endLine;
+	/** @var int  position of end tag in source template */
+	public $endLine;
 
-    /** @var string @internal */
-    public $innerMarker;
+	/** @var string @internal */
+	public $innerMarker;
 
 
-    public function __construct($name, self $parentNode = null)
-    {
-        $this->name = $name;
-        $this->parentNode = $parentNode;
-        $this->isEmpty = &$this->empty;
-    }
+	public function __construct($name, self $parentNode = null)
+	{
+		$this->name = $name;
+		$this->parentNode = $parentNode;
+		$this->isEmpty = &$this->empty;
+	}
 }

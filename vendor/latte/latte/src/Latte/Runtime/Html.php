@@ -15,23 +15,23 @@ use Latte;
  */
 class Html implements IHtmlString
 {
-    use Latte\Strict;
+	use Latte\Strict;
 
-    /** @var string */
-    private $value;
-
-
-    public function __construct($value)
-    {
-        $this->value = (string)$value;
-    }
+	/** @var string */
+	private $value;
 
 
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->value;
-    }
+	public function __construct($value)
+	{
+		$this->value = (string) $value;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->value;
+	}
 }

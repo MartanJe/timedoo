@@ -16,50 +16,50 @@ use Nette\Http;
  */
 class RedirectResponse implements Nette\Application\IResponse
 {
-    use Nette\SmartObject;
+	use Nette\SmartObject;
 
-    /** @var string */
-    private $url;
+	/** @var string */
+	private $url;
 
-    /** @var int */
-    private $httpCode;
-
-
-    /**
-     * @param  string  URI
-     * @param  int     HTTP code 3xx
-     */
-    public function __construct($url, $httpCode = Http\IResponse::S302_FOUND)
-    {
-        $this->url = (string)$url;
-        $this->httpCode = (int)$httpCode;
-    }
+	/** @var int */
+	private $httpCode;
 
 
-    /**
-     * @return string
-     */
-    public function getUrl()
-    {
-        return $this->url;
-    }
+	/**
+	 * @param  string  URI
+	 * @param  int     HTTP code 3xx
+	 */
+	public function __construct($url, $httpCode = Http\IResponse::S302_FOUND)
+	{
+		$this->url = (string) $url;
+		$this->httpCode = (int) $httpCode;
+	}
 
 
-    /**
-     * @return int
-     */
-    public function getCode()
-    {
-        return $this->httpCode;
-    }
+	/**
+	 * @return string
+	 */
+	public function getUrl()
+	{
+		return $this->url;
+	}
 
 
-    /**
-     * Sends response to output.
-     * @return void
-     */
-    public function send(Http\IRequest $httpRequest, Http\IResponse $httpResponse)
-    {
-        $httpResponse->redirect($this->url, $this->httpCode);
-    }
+	/**
+	 * @return int
+	 */
+	public function getCode()
+	{
+		return $this->httpCode;
+	}
+
+
+	/**
+	 * Sends response to output.
+	 * @return void
+	 */
+	public function send(Http\IRequest $httpRequest, Http\IResponse $httpResponse)
+	{
+		$httpResponse->redirect($this->url, $this->httpCode);
+	}
 }

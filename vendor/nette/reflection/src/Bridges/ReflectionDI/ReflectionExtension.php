@@ -15,20 +15,20 @@ use Nette;
  */
 class ReflectionExtension extends Nette\DI\CompilerExtension
 {
-    /** @var bool */
-    private $debugMode;
+	/** @var bool */
+	private $debugMode;
 
 
-    public function __construct($debugMode = false)
-    {
-        $this->debugMode = $debugMode;
-    }
+	public function __construct($debugMode = false)
+	{
+		$this->debugMode = $debugMode;
+	}
 
 
-    public function afterCompile(Nette\PhpGenerator\ClassType $class)
-    {
-        $class->getMethod('initialize')
-            ->addBody('Nette\Reflection\AnnotationsParser::setCacheStorage($this->getByType(Nette\Caching\IStorage::class));')
-            ->addBody('Nette\Reflection\AnnotationsParser::$autoRefresh = ?;', [$this->debugMode]);
-    }
+	public function afterCompile(Nette\PhpGenerator\ClassType $class)
+	{
+		$class->getMethod('initialize')
+			->addBody('Nette\Reflection\AnnotationsParser::setCacheStorage($this->getByType(Nette\Caching\IStorage::class));')
+			->addBody('Nette\Reflection\AnnotationsParser::$autoRefresh = ?;', [$this->debugMode]);
+	}
 }
